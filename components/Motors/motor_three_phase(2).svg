@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="760.0" height="580.0" viewBox="0 0 760.0 580.0">
+ <g class="layer" display="inline">
+  <title>Layer 1</title>
+  <circle cx="290.0" cy="326.0" fill="none" id="svg_motor_circle" r="205.0" stroke="#666666" stroke-width="10"/>
+  <path d="M 106.18,41.75 L 113.82,41.75 L 120.43,45.57 L 124.25,52.18 L 124.25,59.82 L 120.43,66.43 L 113.82,70.25 L 106.18,70.25 L 99.57,66.43 L 95.75,59.82 L 95.75,52.18 L 99.57,45.57 Z" fill="#666666" id="svg_1" stroke="#666666" stroke-width="0"/>
+  <path d="M 286.18,41.75 L 293.82,41.75 L 300.43,45.57 L 304.25,52.18 L 304.25,59.82 L 300.43,66.43 L 293.82,70.25 L 286.18,70.25 L 279.57,66.43 L 275.75,59.82 L 275.75,52.18 L 279.57,45.57 Z" fill="#666666" id="svg_2" stroke="#666666" stroke-width="0"/>
+  <path d="M 466.18,41.75 L 473.82,41.75 L 480.43,45.57 L 484.25,52.18 L 484.25,59.82 L 480.43,66.43 L 473.82,70.25 L 466.18,70.25 L 459.57,66.43 L 455.75,59.82 L 455.75,52.18 L 459.57,45.57 Z" fill="#666666" id="svg_3" stroke="#666666" stroke-width="0"/>
+  <path d="M 646.18,41.75 L 653.82,41.75 L 660.43,45.57 L 664.25,52.18 L 664.25,59.82 L 660.43,66.43 L 653.82,70.25 L 646.18,70.25 L 639.57,66.43 L 635.75,59.82 L 635.75,52.18 L 639.57,45.57 Z" fill="#666666" id="svg_6" stroke="#666666" stroke-width="0"/>
+  <line fill="none" id="svg_u" stroke="#666666" stroke-width="10" x1="110.0" x2="110.0" y1="64.0" y2="227.89"/>
+  <line fill="none" id="svg_v" stroke="#666666" stroke-width="10" x1="290.0" x2="290.0" y1="64.0" y2="121.0"/>
+  <line fill="none" id="svg_w" stroke="#666666" stroke-width="10" x1="470.0" x2="470.0" y1="64.0" y2="227.89"/>
+  <path d="M 650.0,64.0 L 650.0,326.0 L 521.0,326.0" fill="none" id="svg_5" stroke="#666666" stroke-linejoin="round" stroke-width="10"/>
+  <path d="M 501.03,232.04 A 231.0,231.0 0 0 1 501.03,419.96" fill="none" id="svg_4" stroke="#666666" stroke-linecap="round" stroke-width="10"/>
+  <text fill="#666666" font-family="Arial, Helvetica, sans-serif" font-size="76" font-weight="bold" id="svg_m3" text-anchor="middle" x="290.0" y="326.0">M 3</text>
+  <path d="M 244.0,374.0 C 260.0,346.0 275.0,346.0 290.0,374.0 C 305.0,402.0 320.0,402.0 336.0,374.0" fill="none" id="svg_ac_tilde" stroke="#666666" stroke-linecap="round" stroke-width="9"/>
+ </g>
+</svg>

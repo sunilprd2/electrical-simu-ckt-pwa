@@ -1,0 +1,16 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="560.0" height="580.0" viewBox="0 0 560.0 580.0">
+ <g class="layer" display="inline">
+  <title>Layer 1</title>
+  <circle cx="280.0" cy="326.0" fill="none" id="svg_motor_circle" r="205.0" stroke="#666666" stroke-width="10"/>
+  <path d="M 186.18,41.75 L 193.82,41.75 L 200.43,45.57 L 204.25,52.18 L 204.25,59.82 L 200.43,66.43 L 193.82,70.25 L 186.18,70.25 L 179.57,66.43 L 175.75,59.82 L 175.75,52.18 L 179.57,45.57 Z" fill="#666666" id="svg_1" stroke="#666666" stroke-width="0"/>
+  <path d="M 366.18,41.75 L 373.82,41.75 L 380.43,45.57 L 384.25,52.18 L 384.25,59.82 L 380.43,66.43 L 373.82,70.25 L 366.18,70.25 L 359.57,66.43 L 355.75,59.82 L 355.75,52.18 L 359.57,45.57 Z" fill="#666666" id="svg_2" stroke="#666666" stroke-width="0"/>
+  <line fill="none" id="svg_t1" stroke="#666666" stroke-width="10" x1="190.0" x2="190.0" y1="64.0" y2="141.81"/>
+  <line fill="none" id="svg_t2" stroke="#666666" stroke-width="10" x1="370.0" x2="370.0" y1="64.0" y2="141.81"/>
+  <text fill="#666666" font-family="Arial, Helvetica, sans-serif" font-size="84" font-weight="bold" id="svg_m" text-anchor="middle" x="280.0" y="316.0">M</text>
+  <line fill="none" id="svg_dc_solid" stroke="#666666" stroke-linecap="round" stroke-width="10" x1="216.0" x2="344.0" y1="356.0" y2="356.0"/>
+  <line fill="none" id="svg_dc_dash1" stroke="#666666" stroke-linecap="round" stroke-width="10" x1="216.0" x2="248.0" y1="384.0" y2="384.0"/>
+  <line fill="none" id="svg_dc_dash2" stroke="#666666" stroke-linecap="round" stroke-width="10" x1="264.0" x2="296.0" y1="384.0" y2="384.0"/>
+  <line fill="none" id="svg_dc_dash3" stroke="#666666" stroke-linecap="round" stroke-width="10" x1="312.0" x2="344.0" y1="384.0" y2="384.0"/>
+ </g>
+</svg>

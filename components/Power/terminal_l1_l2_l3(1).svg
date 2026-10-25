@@ -1,0 +1,18 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="540.0" height="472.5" viewBox="0 0 540.0 472.5">
+ <g class="layer" display="inline">
+  <title>Layer 1</title>
+  <circle cx="90.0" cy="110.0" fill="none" id="svg_c1" r="36.0" stroke="#666666" stroke-width="9"/>
+  <text fill="#666666" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="bold" id="svg_t1" text-anchor="middle" x="90.0" y="122.0">L1</text>
+  <line fill="none" id="svg_s1" stroke="#666666" stroke-width="10" x1="90.0" x2="90.0" y1="146.0" y2="396.5"/>
+  <path d="M 86.18,390.25 L 93.82,390.25 L 100.43,394.07 L 104.25,400.68 L 104.25,408.32 L 100.43,414.93 L 93.82,418.75 L 86.18,418.75 L 79.57,414.93 L 75.75,408.32 L 75.75,400.68 L 79.57,394.07 Z" fill="#666666" id="svg_25" stroke="#666666" stroke-width="0"/>
+  <circle cx="270.0" cy="110.0" fill="none" id="svg_c2" r="36.0" stroke="#666666" stroke-width="9"/>
+  <text fill="#666666" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="bold" id="svg_t2" text-anchor="middle" x="270.0" y="122.0">L2</text>
+  <line fill="none" id="svg_s2" stroke="#666666" stroke-width="10" x1="270.0" x2="270.0" y1="146.0" y2="396.5"/>
+  <path d="M 266.18,390.25 L 273.82,390.25 L 280.43,394.07 L 284.25,400.68 L 284.25,408.32 L 280.43,414.93 L 273.82,418.75 L 266.18,418.75 L 259.57,414.93 L 255.75,408.32 L 255.75,400.68 L 259.57,394.07 Z" fill="#666666" id="svg_30" stroke="#666666" stroke-width="0"/>
+  <circle cx="450.0" cy="110.0" fill="none" id="svg_c3" r="36.0" stroke="#666666" stroke-width="9"/>
+  <text fill="#666666" font-family="Arial, Helvetica, sans-serif" font-size="34" font-weight="bold" id="svg_t3" text-anchor="middle" x="450.0" y="122.0">L3</text>
+  <line fill="none" id="svg_s3" stroke="#666666" stroke-width="10" x1="450.0" x2="450.0" y1="146.0" y2="396.5"/>
+  <path d="M 446.18,390.25 L 453.82,390.25 L 460.43,394.07 L 464.25,400.68 L 464.25,408.32 L 460.43,414.93 L 453.82,418.75 L 446.18,418.75 L 439.57,414.93 L 435.75,408.32 L 435.75,400.68 L 439.57,394.07 Z" fill="#666666" id="svg_1" stroke="#666666" stroke-width="0"/>
+ </g>
+</svg>

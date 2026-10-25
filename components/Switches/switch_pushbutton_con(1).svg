@@ -1,0 +1,15 @@
+<?xml version="1.0"?>
+<svg xmlns="http://www.w3.org/2000/svg" width="450.0" height="472.5" viewBox="0 0 450.0 472.5">
+ <g class="layer" display="inline">
+  <title>Layer 1</title>
+  <path d="M 221.18,53.75 L 228.82,53.75 L 235.43,57.57 L 239.25,64.18 L 239.25,71.82 L 235.43,78.43 L 228.82,82.25 L 221.18,82.25 L 214.57,78.43 L 210.75,71.82 L 210.75,64.18 L 214.57,57.57 Z" fill="#666666" id="svg_1" stroke="#666666" stroke-width="0"/>
+  <path d="M 131.18,390.25 L 138.82,390.25 L 145.43,394.07 L 149.25,400.68 L 149.25,408.32 L 145.43,414.93 L 138.82,418.75 L 131.18,418.75 L 124.57,414.93 L 120.75,408.32 L 120.75,400.68 L 124.57,394.07 Z" fill="#666666" id="svg_2" stroke="#666666" stroke-width="0"/>
+  <path d="M 311.18,390.25 L 318.82,390.25 L 325.43,394.07 L 329.25,400.68 L 329.25,408.32 L 325.43,414.93 L 318.82,418.75 L 311.18,418.75 L 304.57,414.93 L 300.75,408.32 L 300.75,400.68 L 304.57,394.07 Z" fill="#666666" id="svg_3" stroke="#666666" stroke-width="0"/>
+  <line fill="none" id="svg_stem_top" stroke="#666666" stroke-width="10" x1="225.0" x2="225.0" y1="76.0" y2="168.0"/>
+  <path d="M 135.0,396.5 L 135.0,296 L 195,296" fill="none" id="svg_stem_12" stroke="#666666" stroke-width="10"/>
+  <path d="M 315.0,396.5 L 315.0,296 L 255,296" fill="none" id="svg_stem_14" stroke="#666666" stroke-width="10"/>
+  <line fill="none" id="svg_flapper" stroke="#666666" stroke-linecap="round" stroke-width="10" x1="185" x2="225.0" y1="304" y2="168.0"/>
+  <line fill="none" id="svg_dash" stroke="#666666" stroke-dasharray="10,10" stroke-width="9" x1="117.0" x2="205.0" y1="236.0" y2="236.0"/>
+  <path d="M 143.0,208.0 L 117.0,208.0 L 117.0,264.0 L 143.0,264.0" fill="none" id="svg_actuator" stroke="#666666" stroke-linecap="square" stroke-width="10"/>
+ </g>
+</svg>

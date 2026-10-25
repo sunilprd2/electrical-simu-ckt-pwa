@@ -1,0 +1,1775 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ELECTRICAL SIMU CKT — UI Foundation</title>
+<link rel="stylesheet" href="styles.css?v=v151-light-selected-blue">
+<link rel="manifest" href="manifest.webmanifest">
+<meta name="theme-color" content="#07172f">
+<style>.cad-ribbon .toolbar-icon svg{width:22px;height:22px;display:block;flex:0 0 auto;stroke:currentColor;fill:none}</style>
+<style id="esc-workspace-cursor-fix">
+  #schematic, #sheet, #dropLayer, .esc-svg-grid { cursor: default !important; }
+  #schematic.panning, #schematic.panning * { cursor: default !important; }
+  #dropLayer .dropped-symbol { cursor: grab; }
+  #dropLayer .dropped-symbol.moving { cursor: grabbing; }
+</style>
+<style id="library-toggle-v66">
+.layout > .library { display:block; width:218px; min-width:218px; max-width:218px; flex:0 0 218px; }
+body.library-hidden .layout > .library { display:none !important; width:0 !important; min-width:0 !important; max-width:0 !important; flex:0 0 0 !important; padding:0 !important; border:0 !important; overflow:hidden !important; }
+body.library-hidden .layout > .work { flex:1 1 100% !important; width:100% !important; max-width:100% !important; min-width:0 !important; }
+</style>
+<script>
+window.__escSafeStorage = (function(){
+  let mem = {};
+  try {
+    if (window.name && window.name.startsWith('{"__escStorage":')) {
+      mem = JSON.parse(window.name).__escStorage || {};
+    }
+  } catch (_) {}
+  const syncName = () => {
+    try { window.name = JSON.stringify({ __escStorage: mem }); } catch (_) {}
+  };
+  return {
+    getItem(k){
+      try {
+        const v = window.localStorage.getItem(k);
+        if (v !== null) return v;
+      } catch(_) {}
+      return Object.prototype.hasOwnProperty.call(mem, k) ? mem[k] : null;
+    },
+    setItem(k, v){
+      mem[k] = String(v);
+      syncName();
+      try { window.localStorage.setItem(k, String(v)); } catch(_) {}
+    }
+  };
+})();
+</script>
+<script>
+try {
+  if ('caches' in window) {
+    caches.keys().then(keys => keys.forEach(k => {
+      if (k !== 'electrical-simu-ckt-v151-light-selected-blue') caches.delete(k);
+    }));
+  }
+  if ('serviceWorker' in navigator) {
+    navigator.serviceWorker.getRegistrations().then(regs => regs.forEach(r => r.update()));
+  }
+} catch (_) {}
+</script>
+</head>
+<body class="library-hidden theme-dark">
+
+<header class="top">
+  <div class="brand" aria-label="Electrical Simu CKT brand"><img class="brand-logo" src="./assets/esc-user-logo.png?v=85-logo-path-fix" alt="Electrical Simu CKT logo" onerror="this.onerror=null;this.src='./esc-user-logo.png?v=85-logo-path-fix'"><div class="brand-copy"><div class="brand-title">Electrical Simu<span>CKT</span></div><div class="brand-slogan">Design. Simulate. Innovate.</div></div></div>
+  <nav class="cad-ribbon" aria-label="Main tools">
+    <button id="libraryToggle" class="tool-btn tool-cyan library-toggle" type="button" title="Show component library" aria-label="Show component library" aria-pressed="false"><span class="toolbar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4 5.5A2.5 2.5 0 0 1 6.5 3H20v16H6.5A2.5 2.5 0 0 0 4 21z"/><path d="M4 5.5v13A2.5 2.5 0 0 1 6.5 16H20M8 7h8M8 10h8"/></svg></span><em>Library</em></button>
+    <button id="newBtn" class="tool-btn tool-blue" type="button" title="New drawing"><span class="toolbar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l5 5v13H6z"/><path d="M14 3v5h5M9 13h7M9 17h7"/></svg></span><em>New</em></button>
+    <button id="openBtn" class="tool-btn tool-purple" type="button" title="Open drawing"><span class="toolbar-icon" aria-hidden="true"><svg viewBox="0 0 24 24"><path d="M3 7.5A2.5 2.5 0 0 1 5.5 5H10l2 2h6.5A2.5 2.5 0 0 1 21 9.5v8a2.5 2.5 0 0 1-2.5 2.5h-13A2.5 2.5 0 0 1 3 17.5z"/><path d="M3 10h18"/></svg></span><em>Open</em></button>
+    <button id="saveBtn" class="tool-btn tool-teal" type="button" title="Save drawing"><span class="toolbar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3h14l3 3v15H3V3z"/><path d="M7 3v6h10V3M7 21v-8h10v8"/></svg></span><em>Save</em></button>
+    <button id="saveAsBtn" class="tool-btn tool-teal2" type="button" title="Save drawing as"><span class="toolbar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 3h13l3 3v9M7 3v6h10V3M7 21v-7h7"/><path d="m14 19 5-5 2 2-5 5-3 1z"/></svg></span><em>Save As</em></button>
+    <span class="ribbon-separator"></span>
+    <button id="play" class="tool-btn tool-green" type="button" title="Start simulation"><span class="toolbar-icon">▶</span><em>Run</em></button>
+    <button id="stop" class="tool-btn tool-red" type="button" title="Stop simulation"><span class="toolbar-icon">■</span><em>Stop</em></button>
+    <button id="rotateBtn" class="tool-btn tool-orange" type="button" title="Rotate selected component 90° clockwise" aria-label="Rotate selected component 90 degrees clockwise"><span class="toolbar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 7v5h-5"/><path d="M20 12a8 8 0 1 1-2.35-5.65L20 9"/></svg></span><em>Rotate</em></button>
+    <span class="ribbon-separator"></span>
+    <button id="delete" class="tool-btn tool-red" type="button" title="Delete selected component"><span class="toolbar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M4 7h16M9 7V4h6v3M7 7l1 14h8l1-14M10 11v6M14 11v6"/></svg></span><em>Delete</em></button>
+    <button id="insertTextBtn" class="tool-btn tool-slate" type="button" title="Insert text"><span class="toolbar-icon">T</span><em>Text</em></button>
+
+    <button id="undoBtn" class="tool-btn tool-slate" type="button" title="Undo (up to 100 steps; Ctrl+Z)" disabled><span class="toolbar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 14 4 9l5-5"/><path d="M4 9h10a6 6 0 0 1 0 12h-2"/></svg></span><em>Undo</em></button>
+    <button id="redoBtn" class="tool-btn tool-slate" type="button" title="Redo (up to 100 steps; Ctrl+Y)" disabled><span class="toolbar-icon" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="m15 14 5-5-5-5"/><path d="M20 9H10a6 6 0 0 0 0 12h2"/></svg></span><em>Redo</em></button>
+    <button id="gridToggle" class="tool-btn tool-slate" type="button" title="Toggle schematic grid"><span class="toolbar-icon">▦</span><em>Grid</em></button>
+    <button id="themeToggle" class="tool-btn tool-orange" type="button" title="Toggle Dark / Light Theme" aria-label="Toggle Dark / Light Theme" aria-pressed="false"><span class="toolbar-icon" id="themeToggleIcon">☀</span><em id="themeToggleText">Theme</em></button>
+    <button id="settingsBtn" class="tool-btn tool-slate" type="button" title="Settings"><span class="toolbar-icon">⚙</span><em>Settings</em></button>
+    <input id="openFileInput" type="file" accept=".json,.esc,application/json" hidden>
+  </nav>
+</header>
+<div class="layout">
+<aside class="library">
+  <div class="libtitle library-head"><button id="libraryCollapseArrow" type="button" title="Hide component library" aria-label="Hide component library">‹</button><b>Library</b></div>
+  <input id="search" placeholder="⌕  Search IEC component...">
+  <div id="libraryGroups"><div class="component-category-list" aria-label="Component categories"><button type="button" class="component-category active" data-category="Sources" aria-pressed="true"><span class="category-mark"></span><span>Sources</span></button><button type="button" class="component-category " data-category="Others" aria-pressed="false"><span class="category-mark"></span><span>Others</span></button><button type="button" class="component-category " data-category="Coils" aria-pressed="false"><span class="category-mark"></span><span>Coils</span></button><button type="button" class="component-category " data-category="Auxiliary Contacts" aria-pressed="false"><span class="category-mark"></span><span>Auxiliary Contacts</span></button><button type="button" class="component-category " data-category="Switches" aria-pressed="false"><span class="category-mark"></span><span>Switches</span></button><button type="button" class="component-category " data-category="Loads" aria-pressed="false"><span class="category-mark"></span><span>Loads</span></button><button type="button" class="component-category " data-category="Main Contacts" aria-pressed="false"><span class="category-mark"></span><span>Main Contacts</span></button><button type="button" class="component-category " data-category="Protections" aria-pressed="false"><span class="category-mark"></span><span>Protections</span></button><button type="button" class="component-category " data-category="Motors" aria-pressed="false"><span class="category-mark"></span><span>Motors</span></button></div><div class="library-empty">Select a category. Components will be added later.</div></div>
+</aside>
+<main class="work">
+  <div id="sheet">
+    <svg id="schematic" viewBox="0 0 1200 760" aria-label="Electrical schematic">
+      <defs>
+        <filter id="escLightSelectedComponentTint" x="-20%" y="-20%" width="140%" height="140%" color-interpolation-filters="sRGB">
+          <feFlood flood-color="#006dff" result="selectedBlue"/>
+          <feComposite in="selectedBlue" in2="SourceAlpha" operator="in"/>
+        </filter>
+        <pattern id="escMinorGrid" width="20" height="20" patternUnits="userSpaceOnUse">
+          <path d="M 20 0 L 0 0 0 20" class="esc-grid-minor-line" fill="none" stroke-width="0.7"/>
+        </pattern>
+        <pattern id="escMajorGrid" width="100" height="100" patternUnits="userSpaceOnUse">
+          <path d="M 100 0 L 0 0 0 100" class="esc-grid-major-line" fill="none" stroke-width="1.1"/>
+        </pattern>
+      </defs>
+      <rect id="escGridMinor" class="esc-svg-grid" x="-10000" y="-10000" width="20000" height="20000" fill="url(#escMinorGrid)" pointer-events="none"/>
+      <rect id="escGridMajor" class="esc-svg-grid" x="-10000" y="-10000" width="20000" height="20000" fill="url(#escMajorGrid)" pointer-events="none"/>
+      <g id="engineeringSheet" aria-label="Engineering drawing sheet">
+        <rect class="sheet-paper" x="24" y="24" width="1152" height="712"/>
+        <g class="sheet-coordinates" text-anchor="middle" font-family="Arial,sans-serif" font-size="10">
+          <text x="112" y="51">1</text><text x="220" y="51">2</text><text x="328" y="51">3</text><text x="436" y="51">4</text><text x="544" y="51">5</text><text x="652" y="51">6</text><text x="760" y="51">7</text><text x="868" y="51">8</text><text x="976" y="51">9</text><text x="1084" y="51">10</text>
+          <text x="112" y="710">1</text><text x="220" y="710">2</text><text x="328" y="710">3</text><text x="436" y="710">4</text><text x="544" y="710">5</text><text x="652" y="710">6</text><text x="760" y="710">7</text><text x="868" y="710">8</text><text x="976" y="710">9</text><text x="1084" y="710">10</text>
+          <text x="49" y="112">A</text><text x="49" y="178">B</text><text x="49" y="244">C</text><text x="49" y="310">D</text><text x="49" y="376">E</text><text x="49" y="442">F</text><text x="49" y="508">G</text><text x="49" y="574">H</text><text x="49" y="640">I</text><text x="49" y="690">J</text>
+          <text x="1151" y="112">A</text><text x="1151" y="178">B</text><text x="1151" y="244">C</text><text x="1151" y="310">D</text><text x="1151" y="376">E</text><text x="1151" y="442">F</text><text x="1151" y="508">G</text><text x="1151" y="574">H</text><text x="1151" y="640">I</text><text x="1151" y="690">J</text>
+        </g>
+        <g class="sheet-frame-lines" fill="none" stroke-width="1">
+          <!-- Segmented coordinate frame: top/bottom columns and side rows -->
+          <rect x="24" y="24" width="1152" height="712"/>
+          <rect x="58" y="58" width="1084" height="562"/>
+          <path d="M58 24V58 M166 24V58 M274 24V58 M382 24V58 M490 24V58 M598 24V58 M706 24V58 M814 24V58 M922 24V58 M1030 24V58 M1142 24V58
+                   M58 702V736 M166 702V736 M274 702V736 M382 702V736 M490 702V736 M598 702V736 M706 702V736 M814 702V736 M922 702V736 M1030 702V736 M1142 702V736
+                   M24 58H58 M24 114H58 M24 170H58 M24 226H58 M24 282H58 M24 338H58 M24 394H58 M24 450H58 M24 506H58 M24 562H58 M24 620H58
+                   M1142 58H1176 M1142 114H1176 M1142 170H1176 M1142 226H1176 M1142 282H1176 M1142 338H1176 M1142 394H1176 M1142 450H1176 M1142 506H1176 M1142 562H1176 M1142 620H1176"/>
+        </g>
+        <g class="sheet-titleblock">
+          <rect x="58" y="620" width="1084" height="82"/>
+          <path d="M58 650H1142 M58 676H1142 M58 702H1142 M300 620V702 M650 620V702 M840 620V702 M1000 620V702 M480 650V676 M650 650V676 M840 650V676 M1000 650V676 M480 676V702 M840 676V702 M1000 676V702"/>
+          <image class="sheet-logo" href="./assets/esc-brand-banner.png?v=sheet-navy-banner-cyan-icon-v3" x="68" y="624" width="222" height="74" preserveAspectRatio="xMidYMid meet"/>
+          <text x="312" y="636">PROJECT:</text><text id="drawingProjectValue" class="sheet-value" x="370" y="636"></text>
+          <text x="312" y="666">TITLE:</text><text id="drawingTitleValue" class="sheet-value" x="370" y="666"></text>
+          <text x="312" y="692">DRAWN:</text><text id="drawingAuthorValue" class="sheet-value" x="370" y="692"></text>
+          <text x="492" y="666">CHECKED:</text><text id="drawingCheckedValue" class="sheet-value" x="542" y="666"></text>
+          <text x="662" y="666">APPROVED:</text><text id="drawingApprovedValue" class="sheet-value" x="718" y="666"></text>
+          <text x="852" y="636">DRAWING NO.</text><text id="drawingDocValue" class="sheet-value" x="852" y="647"></text>
+          <text x="852" y="666">DATE</text><text id="drawingDateValue" class="sheet-value" x="884" y="666"></text>
+          <text x="1012" y="636">SHEET NO.</text><text id="drawingSheetValue" class="sheet-value" x="1012" y="648">1/1</text>
+          <text x="1012" y="666">SIZE</text><text id="drawingSizeValue" class="sheet-value" x="1044" y="666">A4</text>
+          <text x="1012" y="692">REV.</text><text id="drawingRevValue" class="sheet-value" x="1044" y="692"></text>
+        </g>
+      </g>
+      <g id="dropLayer"></g>
+    </svg>
+    <div class="drop-overlay" id="dropOverlay">DROP IEC SYMBOL HERE</div>
+  </div>
+  <div id="workspaceZoomControls" class="workspace-zoom-controls" role="group" aria-label="Workspace zoom controls">
+    <button id="zoomOutBtn" type="button" title="Zoom out" aria-label="Zoom out"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M7.5 10.5h6"/></svg></button>
+    <button id="fitBtn" type="button" title="Zoom to fit" aria-label="Zoom to fit"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M8 3H3v5M16 3h5v5M3 16v5h5M21 16v5h-5"/><path d="M8 8h8v8H8z"/></svg></button>
+    <button id="zoomInBtn" type="button" title="Zoom in" aria-label="Zoom in"><svg viewBox="0 0 24 24" aria-hidden="true"><circle cx="10.5" cy="10.5" r="6.5"/><path d="m16 16 5 5M10.5 7.5v6M7.5 10.5h6"/></svg></button>
+  </div>
+  <section id="simulationDiagnostics" class="simulation-diagnostics" aria-label="Circuit fault" aria-live="assertive" hidden>
+    <div id="diagnosticList" class="simulation-diagnostics-list"></div>
+  </section>
+</main>
+</div>
+
+
+<aside id="propertyPanel" class="property-panel" aria-hidden="true">
+ <div class="property-head"><span class="property-icon">☷</span><b id="propertyTitle">Component</b><button id="propertyClose" type="button" title="Close properties">×</button></div>
+ <div class="property-content">
+  <label>Type<input id="propType" readonly></label>
+  <label>Tag<input id="propTag"></label>
+  <label>Comment<input id="propComment" placeholder="Optional component note"></label>
+  <div class="property-actions">
+   <button id="propertyOk" class="property-ok" type="button">Save</button>
+  </div>
+ </div>
+</aside>
+
+<div id="componentDialog" class="component-dialog" aria-hidden="true">
+  <div class="component-dialog-card" role="dialog" aria-modal="true" aria-labelledby="componentDialogTitle">
+    <div class="dialog-heading"><b id="componentDialogTitle">Component details</b><button type="button" id="closeComponentDialog" aria-label="Close">✕</button></div>
+    <label>Component name<input id="detailName" type="text"></label>
+    <div class="dialog-grid"><label>Short designation<input id="detailRef" type="text" placeholder="KM1, F1, QF1"></label><label>Value / rating<input id="detailValue" type="text" placeholder="e.g. 9 A, 230 V"></label></div>
+    <label id="detailFieldModelRow" style="display:none">DC motor model<select id="detailFieldModel"><option value="permanent">Permanent magnet (A1/A2)</option><option value="wound">Wound field (A1/A2 and F1/F2)</option></select></label>
+    <label>Terminal numbers (comma-separated)<input id="detailTerminals" type="text" placeholder="1,3,5,2,4,6"></label>
+    <div class="dialog-actions"><button type="button" id="cancelComponentDialog">Cancel</button><button type="button" id="applyComponentDialog">Apply changes</button></div>
+  </div>
+</div>
+<div id="sheetSettings" class="sheet-settings sheet-titleblock-editor" role="dialog" aria-label="Engineering sheet details" aria-hidden="true">
+  <div class="sheet-settings-head"><b>Engineering Sheet Details</b><button type="button" id="sheetClose" aria-label="Close sheet settings">×</button></div>
+  <div class="sheet-form-titleblock" aria-label="Editable engineering sheet title block">
+    <div class="sheet-form-brand"><img src="./assets/esc-brand-banner.png?v=sheet-navy-banner-cyan-icon-v3" alt="Electrical SimuCKT — Design. Simulate. Innovate."></div>
+    <label class="sheet-cell sheet-cell-project"><span>PROJECT:</span><input id="sheetProject" type="text" placeholder="Click to enter project"></label>
+    <label class="sheet-cell sheet-cell-drawing"><span>DRAWING NO.</span><input id="sheetDocNo" type="text" placeholder="Drawing number"></label>
+    <label class="sheet-cell sheet-cell-sheet"><span>SHEET NO.</span><input id="sheetNumber" type="text" value="1/1" aria-label="Sheet number"></label>
+    <label class="sheet-cell sheet-cell-title"><span>TITLE:</span><input id="sheetTitle" type="text" placeholder="Click to enter title"></label>
+    <label class="sheet-cell sheet-cell-checked"><span>CHECKED:</span><input id="sheetChecked" type="text" placeholder="Name"></label>
+    <label class="sheet-cell sheet-cell-approved"><span>APPROVED:</span><input id="sheetApproved" type="text" placeholder="Name"></label>
+    <label class="sheet-cell sheet-cell-date"><span>DATE:</span><input id="sheetDate" type="date" aria-label="Date"></label>
+    <label class="sheet-cell sheet-cell-size"><span>SIZE:</span><select id="sheetSize"><option>A4</option><option>A3</option><option>A5</option><option>A2</option><option>A1</option><option>A0</option><option>Custom</option></select></label>
+    <label class="sheet-cell sheet-cell-drawn"><span>DRAWN:</span><input id="sheetAuthor" type="text" placeholder="Name"></label>
+    <label class="sheet-cell sheet-cell-revision"><span>REV.</span><input id="sheetRevision" type="text" placeholder="00"></label>
+  </div>
+  <div class="sheet-form-options">
+    <label>Orientation <select id="sheetOrientation"><option value="landscape">Landscape</option><option value="portrait">Portrait</option></select></label>
+    <div class="sheet-settings-actions"><button id="sheetApply" type="button">OK</button><button id="sheetReset" type="button">Reset</button></div>
+  </div>
+  <label class="sheet-check" style="display:none"><span>Show engineering sheet (border, axes &amp; title block)</span><input id="sheetEnabled" type="checkbox"></label>
+</div>
+
+<div id="escSettingsPopover" role="dialog" aria-label="Workspace settings" aria-hidden="true">
+  <h3>Workspace Settings</h3>
+  <div class="settings-section-label">Workspace Display</div>
+  <label class="zoom-panel-setting"><span>Zoom Workspace</span><span class="zoom-panel-state">On</span><span class="zoom-switch"><input id="showZoomPanel" type="checkbox"><span class="zoom-switch-track"></span></span></label>
+  <label class="zoom-panel-setting"><span>Engineering Sheet</span><span class="zoom-panel-state" id="settingsSheetState">Off</span><span class="zoom-switch"><input id="settingsSheetToggle" type="checkbox"><span class="zoom-switch-track"></span></span></label>
+  <label class="zoom-panel-setting"><span>Click to Connect</span><span class="zoom-panel-state" id="clickToConnectState">Off</span><span class="zoom-switch"><input id="clickToConnectToggle" type="checkbox"><span class="zoom-switch-track"></span></span></label>
+  <div class="settings-section-label">Component / Wire Colour (IEC Standard)</div>
+  <label id="escDefaultColourRow" class="zoom-panel-setting"><span>Use selected colour as default</span><input id="escDefaultColour" type="checkbox" checked aria-label="Use selected colour as default"></label>
+  <div class="esc-colour-grid" role="group" aria-label="IEC Conductor, Wire and Component Colours">
+    <div class="esc-colour-item"><span>L1 (Phase R)</span><button type="button" class="esc-colour-swatch-btn" data-color-key="l1" title="Select L1 (Phase R) colour"><span class="swatch-fill" style="background:#ff0000"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>L2 (Phase Y)</span><button type="button" class="esc-colour-swatch-btn" data-color-key="l2" title="Select L2 (Phase Y) colour"><span class="swatch-fill" style="background:#ffc000"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>L3 (Phase B)</span><button type="button" class="esc-colour-swatch-btn" data-color-key="l3" title="Select L3 (Phase B) colour"><span class="swatch-fill" style="background:#0070c0"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>L (Phase)</span><button type="button" class="esc-colour-swatch-btn" data-color-key="l" title="Select L (Single Phase) colour"><span class="swatch-fill" style="background:#ff0000"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>N (Neutral)</span><button type="button" class="esc-colour-swatch-btn" data-color-key="n" title="Select N (Neutral) colour"><span class="swatch-fill" style="background:#00b0f0"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>PE (Earth)</span><button type="button" class="esc-colour-swatch-btn" data-color-key="pe" title="Select PE (Protective Earth) colour"><span class="swatch-fill" style="background:#00b050"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>+VE (DC+)</span><button type="button" class="esc-colour-swatch-btn" data-color-key="pos" title="Select +VE (DC Positive) colour"><span class="swatch-fill" style="background:#ff0000"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>-VE (DC-)</span><button type="button" class="esc-colour-swatch-btn" data-color-key="neg" title="Select -VE (DC Negative) colour"><span class="swatch-fill" style="background:#0070c0"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>Wire Colour</span><button type="button" class="esc-colour-swatch-btn" data-color-key="wire" title="Select Default Wire colour"><span class="swatch-fill" style="background:#ffffff"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>Component</span><button type="button" class="esc-colour-swatch-btn" data-color-key="component" title="Select Default Component colour"><span class="swatch-fill" style="background:#ffffff"></span><span class="swatch-caret">▼</span></button></div>
+    <div class="esc-colour-item"><span>Tag / Terminal Labels</span><button type="button" class="esc-colour-swatch-btn" data-color-key="tagTerminal" title="Select shared tag and terminal label colour"><span class="swatch-fill" style="background:#00d9f5"></span><span class="swatch-caret">▼</span></button></div>
+  </div>
+  <button type="button" id="escResetColoursBtn">Reset IEC Standard Colours</button>
+  <div class="settings-section-label">Drawing Text</div>
+  <div id="escTextEditorTools" class="esc-text-settings">
+    <label class="esc-text-setting-row"><span>Text colour</span><input id="escTextColour" type="color" value="#ffff00" aria-label="Drawing text colour"></label>
+    <label class="esc-text-setting-row"><span>Text size</span><input id="escTextSize" type="number" min="6" max="96" step="1" value="10" aria-label="Drawing text size"></label>
+  </div>
+  <input id="escComponentColor" type="color" value="#2584ff" hidden aria-hidden="true">
+  <input id="escBorderColor" type="color" value="#f59e0b" hidden aria-hidden="true">
+  <p>Design. Simulate. Innovate.</p>
+</div>
+<div id="escColorPalettePopup" class="esc-palette-popup" role="dialog" aria-label="Theme and Standard Colors" aria-hidden="true">
+  <div class="esc-palette-title">Theme Colors</div>
+  <div id="escPaletteThemeBase" class="esc-palette-row-base"></div>
+  <div id="escPaletteThemeShades" class="esc-palette-shades"></div>
+  <div class="esc-palette-divider"></div>
+  <div class="esc-palette-title">Standard Colors</div>
+  <div id="escPaletteStandard" class="esc-palette-row-standard"></div>
+</div>
+<div id="escUtilityPopover" class="esc-utility-popover" role="dialog" aria-live="polite" aria-hidden="true"><div class="utility-popover-head"><b id="utilityTitle">ELECTRICAL SIMU CKT</b><button type="button" id="utilityClose" aria-label="Close panel">×</button></div><div id="utilityBody"></div></div>
+<script src="app.js?v=v151-light-selected-blue"></script>
+<script>
+/* Component library fallback: Sources, Coils and Switches SVG symbols, expandable category rows. */
+(function(){
+  const host=document.getElementById('libraryGroups');
+  if(!host) return;
+  // Only trust app.js markup when it contains the required count and separate chevron.
+  // The old static placeholder also used .component-category-list but had neither, so it
+  // prevented this fallback from rendering when app.js failed before library initialization.
+  const renderedLibrary = host.querySelector('.component-category-list');
+  if(renderedLibrary && renderedLibrary.querySelector('.category-count') && renderedLibrary.querySelector('.category-chevron')) return;
+  host.innerHTML = '';
+  const symbols=[{"file": "components/Power/earth_ground(1).svg", "name": "Earth Ground", "category": "Sources", "type": "Earth Ground"}, {"file": "components/Power/earth_pe(1).svg", "name": "Earth PE", "category": "Sources", "type": "Earth PE"}, {"file": "components/Power/source_dc_negative(1).svg", "name": "Source DC Negative", "category": "Sources", "type": "Source DC Negative"}, {"file": "components/Power/source_dc_positive(1).svg", "name": "Source DC Positive", "category": "Sources", "type": "Source DC Positive"}, {"file": "components/Power/source_dc_supply_pair(1).svg", "name": "Source DC Supply Pair", "category": "Sources", "type": "Source DC Supply Pair"}, {"file": "components/Power/terminal_l1_l2_l3(1).svg", "name": "Terminal L1 L2 L3", "category": "Sources", "type": "Terminal L1 L2 L3"}, {"file": "components/Power/terminal_l1_l2_l3_n(1).svg", "name": "Terminal L1 L2 L3 N", "category": "Sources", "type": "Terminal L1 L2 L3 N"}, {"file": "components/Power/terminal_neutral_n(1).svg", "name": "Terminal Neutral N", "category": "Sources", "type": "Terminal Neutral N"}, {"file": "components/Power/terminal_phase_l(1).svg", "name": "Terminal Phase L", "category": "Sources", "type": "Terminal Phase L"}, {"file": "components/Power/ac_to_dc_power_supply.svg", "name": "AC to DC Power Supply", "category": "Sources", "type": "AC to DC Power Supply"}, {"file": "components/Coils/coil_contactor.svg", "name": "Contactor Coil", "category": "Coils", "type": "Contactor Coil"}, {"file": "components/Coils/coil_tof_timer.svg", "name": "TOF Timer Coil", "category": "Coils", "type": "TOF Timer Coil"}, {"file": "components/Coils/coil_ton_timer.svg", "name": "TON Timer Coil", "category": "Coils", "type": "TON Timer Coil"}, {"file": "components/Coils/coil_ton_tof_timer.svg", "name": "TON/TOF Timer Coil", "category": "Coils", "type": "TON/TOF Timer Coil"}, {"file": "components/Auxiliary Contacts/aux_contacts_nc.svg", "name": "Aux Contacts NC", "category": "Auxiliary Contacts", "type": "Aux Contacts NC"}, {"file": "components/Auxiliary Contacts/aux_contacts_no.svg", "name": "Aux Contacts NO", "category": "Auxiliary Contacts", "type": "Aux Contacts NO"}, {"file": "components/Auxiliary Contacts/aux_contacts_off_delay_nc.svg", "name": "Aux Contacts Off Delay NC", "category": "Auxiliary Contacts", "type": "Aux Contacts Off Delay NC"}, {"file": "components/Auxiliary Contacts/aux_contacts_off_delay_no.svg", "name": "Aux Contacts Off Delay NO", "category": "Auxiliary Contacts", "type": "Aux Contacts Off Delay NO"}, {"file": "components/Auxiliary Contacts/aux_contacts_on_delay_nc.svg", "name": "Aux Contacts On Delay NC", "category": "Auxiliary Contacts", "type": "Aux Contacts On Delay NC"}, {"file": "components/Auxiliary Contacts/aux_contacts_on_delay_no.svg", "name": "Aux Contacts On Delay NO", "category": "Auxiliary Contacts", "type": "Aux Contacts On Delay NO"}, {"file": "components/Auxiliary Contacts/aux_contacts_thermal_nc.svg", "name": "Thermal Relay NC", "category": "Auxiliary Contacts", "type": "Thermal Relay NC"}, {"file": "components/Auxiliary Contacts/aux_contacts_thermal_no.svg", "name": "Thermal Relay NO", "category": "Auxiliary Contacts", "type": "Thermal Relay NO"}, {"file": "components/Switches/switch_3_position_selector I-0-II(1).svg", "name": "3-Position Selector Switch I-0-II", "category": "Switches", "type": "3-Position Selector Switch I-0-II"}, {"file": "components/Switches/switch_3_position_selector I-II-III(1).svg", "name": "3-Position Selector Switch I-II-III", "category": "Switches", "type": "3-Position Selector Switch I-II-III"}, {"file": "components/Switches/switch_con(1).svg", "name": "Switch Changeover (CON)", "category": "Switches", "type": "Switch Changeover (CON)"}, {"file": "components/Switches/switch_nc(1).svg", "name": "Switch NC", "category": "Switches", "type": "Switch NC"}, {"file": "components/Switches/switch_no(1).svg", "name": "Switch NO", "category": "Switches", "type": "Switch NO"}, {"file": "components/Switches/switch_pushbutton_con(1).svg", "name": "Pushbutton Changeover (CON)", "category": "Switches", "type": "Pushbutton Changeover (CON)"}, {"file": "components/Switches/switch_pushbutton_nc(1).svg", "name": "Pushbutton NC", "category": "Switches", "type": "Pushbutton NC"}, {"file": "components/Switches/switch_pushbutton_no(1).svg", "name": "Pushbutton NO", "category": "Switches", "type": "Pushbutton NO"}, {"file": "components/Loads/load_beacon(2).svg", "name": "Beacon", "category": "Loads", "type": "Beacon"}, {"file": "components/Loads/load_bell(2).svg", "name": "Bell", "category": "Loads", "type": "Bell"}, {"file": "components/Loads/load_blinking_pilot_lamp(2).svg", "name": "Blinking Pilot Lamp", "category": "Loads", "type": "Blinking Pilot Lamp"}, {"file": "components/Loads/load_buzzer(2).svg", "name": "Buzzer", "category": "Loads", "type": "Buzzer"}, {"file": "components/Loads/load_light(2).svg", "name": "Pilot Light", "category": "Loads", "type": "Pilot Light"}, {"file": "components/Main Contacts/main_contacts_1p_no(1).svg", "name": "Main Contacts 1P NO", "category": "Main Contacts", "type": "Main Contacts 1P NO"}, {"file": "components/Main Contacts/main_contacts_2p_no(1).svg", "name": "Main Contacts 2P NO", "category": "Main Contacts", "type": "Main Contacts 2P NO"}, {"file": "components/Main Contacts/main_contacts_3p_no(1).svg", "name": "Main Contacts 3P NO", "category": "Main Contacts", "type": "Main Contacts 3P NO"}, {"file": "components/Protections/protection_circuit_breaker_1p(1).svg", "name": "Circuit Breaker 1P", "category": "Protections", "type": "Circuit Breaker 1P"}, {"file": "components/Protections/protection_circuit_breaker_2p(1).svg", "name": "Circuit Breaker 2P", "category": "Protections", "type": "Circuit Breaker 2P"}, {"file": "components/Protections/protection_circuit_breaker_3p(1).svg", "name": "Circuit Breaker 3P", "category": "Protections", "type": "Circuit Breaker 3P"}, {"file": "components/Protections/protection_fuse_1p(1).svg", "name": "Fuse 1P", "category": "Protections", "type": "Fuse 1P"}, {"file": "components/Protections/protection_fuse_2p(1).svg", "name": "Fuse 2P", "category": "Protections", "type": "Fuse 2P"}, {"file": "components/Protections/protection_fuse_3p(1).svg", "name": "Fuse 3P", "category": "Protections", "type": "Fuse 3P"}, {"file": "components/Protections/protection_fuse_4p(1).svg", "name": "Fuse 4P", "category": "Protections", "type": "Fuse 4P"}, {"file": "components/Protections/protection_fuse_isolator_1p(1).svg", "name": "Fuse Isolator 1P", "category": "Protections", "type": "Fuse Isolator 1P"}, {"file": "components/Protections/protection_fuse_isolator_2p(1).svg", "name": "Fuse Isolator 2P", "category": "Protections", "type": "Fuse Isolator 2P"}, {"file": "components/Protections/protection_fuse_isolator_3p(1).svg", "name": "Fuse Isolator 3P", "category": "Protections", "type": "Fuse Isolator 3P"}, {"file": "components/Protections/protection_fuse_isolator_4p(1).svg", "name": "Fuse Isolator 4P", "category": "Protections", "type": "Fuse Isolator 4P"}, {"file": "components/Protections/protection_motor_circuit_breaker_2p(1).svg", "name": "Motor Circuit Breaker 2P", "category": "Protections", "type": "Motor Circuit Breaker 2P"}, {"file": "components/Protections/protection_motor_circuit_breaker_3p(1).svg", "name": "Motor Circuit Breaker 3P", "category": "Protections", "type": "Motor Circuit Breaker 3P"}, {"file": "components/Protections/protection_thermal_overload_relay_2p(1).svg", "name": "Thermal Overload Relay 2P", "category": "Protections", "type": "Thermal Overload Relay 2P"}, {"file": "components/Protections/protection_thermal_overload_relay_3p(1).svg", "name": "Thermal Overload Relay 3P", "category": "Protections", "type": "Thermal Overload Relay 3P"}, {"file": "components/Motors/motor_dc_motor(2).svg", "name": "DC Motor", "category": "Motors", "type": "DC Motor"}, {"file": "components/Motors/motor_single_phase(2).svg", "name": "Single-Phase Motor", "category": "Motors", "type": "Single-Phase Motor"}, {"file": "components/Motors/motor_three_phase(2).svg", "name": "Three-Phase Motor", "category": "Motors", "type": "Three-Phase Motor"}, {"file": "components/Motors/motor_three_phase_star_delta(2).svg", "name": "Three-Phase Star-Delta Motor", "category": "Motors", "type": "Three-Phase Star-Delta Motor"}, {"file": "components/Proximity Sensor/proximity_sensor_npn_nc(2).svg", "name": "Proximity Sensor NPN NC", "category": "Proximity Sensor", "type": "Proximity Sensor NPN NC"}, {"file": "components/Proximity Sensor/proximity_sensor_npn_no(2).svg", "name": "Proximity Sensor NPN NO", "category": "Proximity Sensor", "type": "Proximity Sensor NPN NO"}, {"file": "components/Proximity Sensor/proximity_sensor_pnp_nc(2).svg", "name": "Proximity Sensor PNP NC", "category": "Proximity Sensor", "type": "Proximity Sensor PNP NC"}, {"file": "components/Proximity Sensor/proximity_sensor_pnp_no(2).svg", "name": "Proximity Sensor PNP NO", "category": "Proximity Sensor", "type": "Proximity Sensor PNP NO"}];
+  const icons={source:'<circle cx="12" cy="12" r="9"/><path d="M4 12c2-7 5-7 8 0s6 7 8 0"/>',others:'<rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/>',coil:'<path d="M2 12h3c0-9 4-9 4 0s4 9 4 0 4-9 4 0 3 9 5 0"/>',aux:'<path d="M12 3v18M3 12h9l7-7M12 12l7 7"/>',switch:'<circle cx="5" cy="17" r="2"/><path d="M7 16 19 5M16 19h5"/>',load:'<circle cx="12" cy="12" r="9"/><path d="m6 6 12 12M18 6 6 18"/>',contactor:'<path d="M5 3v18M19 3v18M2 8h6M16 16h6M8 8l8 8"/>',protection:'<path d="M7 3h10v18H7zM10 3V1h4v2M9 17l6-6"/>',motor:'<circle cx="12" cy="12" r="9"/><path d="M2 12h3M19 12h3"/><text x="12" y="16" text-anchor="middle" font-size="11" fill="currentColor" stroke="none">M</text>',proximity:'<rect x="3" y="7" width="9" height="18" rx="1"/><path d="M16 10 Q23 16 16 22 M20 7 Q29 16 20 25 M24 4 Q34 16 24 28"/>'};
+  let expanded=null; // Start with every library category collapsed; users expand a category manually.
+  const esc=s=>String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
+  function paint(){
+    const q=(document.getElementById('search')?.value||'').trim().toLowerCase();
+    const filtered=expanded ? symbols.filter(s=>s.category===expanded&&(!q||(s.name+' '+s.category).toLowerCase().includes(q))) : [];
+    const resultMarkup=expanded?((filtered.length?'<div class="component-results">'+filtered.map(s=>'<button type="button" class="symbol-btn" draggable="true" title="Drag '+esc(s.name)+' into the schematic" data-symbol="'+esc(s.type)+'" data-name="'+esc(s.name)+'" data-ref="" data-accent="#e9f1ed" data-file="'+esc(s.file)+'"><img src="'+esc(s.file)+'" alt="" loading="lazy"><span>'+esc(s.name)+'</span></button>').join('')+'</div>':'<div class="component-results"><div class="library-empty">No components in this category yet.</div></div>')):'';
+    host.innerHTML='<div class="component-category-list" role="list" aria-label="Component categories">'+cats.map(([name,color,key])=>'<div class="library-category-wrap"><button type="button" class="component-category '+(expanded===name?'active':'')+'" data-category="'+name+'" style="--category-accent:'+color+'" aria-expanded="'+(expanded===name)+'" aria-pressed="'+(expanded===name)+'"><span class="category-icon" aria-hidden="true"><svg viewBox="0 0 36 32" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">'+icons[key]+'</svg></span><span class="category-mark" aria-hidden="true"></span><span class="category-name">'+name+'</span><span class="category-count">('+symbols.filter(s=>s.category===name).length+')</span><span class="category-chevron '+(expanded===name?'expanded':'')+'" aria-hidden="true">›</span></button>'+(expanded===name?resultMarkup:'')+'</div>').join('')+'</div>';
+    host.querySelectorAll('.component-category').forEach(b=>b.addEventListener('click',()=>{expanded=expanded===b.dataset.category?null:b.dataset.category;paint()}));
+    host.querySelectorAll('.symbol-btn').forEach(b=>{
+      b.addEventListener('dragstart',e=>{e.dataTransfer.effectAllowed='copy';e.dataTransfer.setData('application/json',JSON.stringify({type:b.dataset.symbol,name:b.dataset.name,ref:b.dataset.ref,accent:b.dataset.accent,symbolFile:b.dataset.file}));document.getElementById('dropOverlay')?.classList.add('show');const st=document.getElementById('state');if(st)st.textContent='DRAGGING • '+b.dataset.name.toUpperCase()});
+      b.addEventListener('dragend',()=>document.getElementById('dropOverlay')?.classList.remove('show'));
+    });
+  }
+  paint();
+  document.getElementById('search')?.addEventListener('input',paint);
+})();
+</script>
+<script>
+document.getElementById("printDrawing")?.addEventListener("click",()=>window.print());
+(()=>{
+ const body=document.body, sheet=document.getElementById('sheet');
+ const themeBtn=document.getElementById('themeToggle'), gridBtn=document.getElementById('gridToggle');
+ let theme=window.__escSafeStorage.getItem('esim-theme')||'dark';
+ let grid=window.__escSafeStorage.getItem('esim-grid')!=='off';
+ function render(){body.classList.toggle('theme-light',theme==='light');body.classList.toggle('theme-dark',theme==='dark');sheet.classList.toggle('grid-off',!grid);body.classList.toggle('grid-disabled',!grid);if(themeBtn){themeBtn.setAttribute('aria-pressed',String(theme==='light'));themeBtn.classList.toggle('active',theme==='light');const ti=document.getElementById('themeToggleIcon');if(ti)ti.textContent=theme==='light'?'☾':'☀';themeBtn.title=theme==='light'?'Theme: Light Mode (Click for Dark Mode)':'Theme: Dark Mode (Click for Light Mode)';}if(gridBtn){gridBtn.setAttribute('aria-pressed',String(grid));gridBtn.classList.toggle('active',grid);}}
+ themeBtn?.addEventListener('click',()=>{theme=theme==='dark'?'light':'dark';window.__escSafeStorage.setItem('esim-theme',theme);render()});
+ const settingsBtn=document.getElementById('settingsBtn'), settingsPanel=document.getElementById('escSettingsPopover');
+ if(settingsBtn&&settingsPanel){
+   settingsBtn.addEventListener('click',()=>{const open=!settingsPanel.classList.contains('open');settingsPanel.classList.toggle('open',open);settingsPanel.setAttribute('aria-hidden',String(!open));settingsBtn.classList.toggle('active',open);});
+   document.getElementById('settingsThemeToggle')?.addEventListener('change',e=>{theme=e.target.checked?'light':'dark';window.__escSafeStorage.setItem('esim-theme',theme);render();});
+   document.getElementById('settingsGridToggle')?.addEventListener('change',e=>{grid=e.target.checked;window.__escSafeStorage.setItem('esim-grid',grid?'on':'off');render();});
+   document.addEventListener('click',e=>{if(settingsPanel.classList.contains('open')&&!settingsPanel.contains(e.target)&&!settingsBtn.contains(e.target)){settingsPanel.classList.remove('open');settingsPanel.setAttribute('aria-hidden','true');settingsBtn.classList.remove('active');}});
+ }
+
+ const connectBtn=document.getElementById('connectToggle');
+ let connectMode=true; window.__escSafeStorage.setItem('esim-connect-mode','on');
+ const clickToConnectToggle=document.getElementById('clickToConnectToggle');
+ const clickToConnectState=document.getElementById('clickToConnectState');
+ const CLICK_CONNECT_KEY='esc-click-to-connect-v1';
+ let clickToConnectMode=window.__escSafeStorage.getItem(CLICK_CONNECT_KEY)==='on';
+ window.__escClickToConnectMode=clickToConnectMode;
+ window.__escDragConnectMode=false;
+ function renderConnect(){
+   body.classList.toggle('connect-mode',connectMode);
+   body.classList.toggle('click-to-connect-mode',clickToConnectMode);
+   body.classList.remove('drag-connect-mode');
+   window.__escClickToConnectMode=clickToConnectMode;
+   window.__escDragConnectMode=false;
+   if(connectBtn){
+     connectBtn.classList.toggle('active',connectMode);
+     connectBtn.setAttribute('aria-pressed',String(connectMode));
+   }
+   if(clickToConnectToggle){
+     clickToConnectToggle.checked=clickToConnectMode;
+   }
+   if(clickToConnectState){
+     clickToConnectState.textContent=clickToConnectMode?'On':'Off';
+   }
+ }
+ window.setClickToConnectMode=function(on, persist=true){
+   clickToConnectMode=Boolean(on);
+   if(persist){
+     window.__escSafeStorage.setItem(CLICK_CONNECT_KEY,clickToConnectMode?'on':'off');
+   }
+   if(typeof window.cancelActiveWiring==='function') window.cancelActiveWiring('');
+   renderConnect();
+   const st=document.getElementById('state');
+   if(st) st.textContent=clickToConnectMode?'CLICK TO CONNECT ON • CLICK TWO TERMINALS FOR 3-SEGMENT ORTHOGONAL WIRE':'DEFAULT CONNECT MODE • CLICK FIRST TERMINAL TO START WIRE PREVIEW';
+ };
+ window.setDragConnectMode=window.setClickToConnectMode;
+ if(connectBtn){connectBtn.addEventListener('click',()=>{connectMode=!connectMode;window.__escSafeStorage.setItem('esim-connect-mode',connectMode?'on':'off');renderConnect();});}
+ if(clickToConnectToggle){
+   clickToConnectToggle.addEventListener('change',()=>{
+     window.setClickToConnectMode(clickToConnectToggle.checked, true);
+   });
+ }
+ renderConnect();
+
+ // Engineering sheet is optional: keep it hidden by default until the user enables it.
+ const sheetBtn=document.getElementById('sheetBtn'), sheetPanel=document.getElementById('sheetSettings');
+ const sheetEnabled=document.getElementById('sheetEnabled');
+ const sheetSize=document.getElementById('sheetSize'), sheetOrientation=document.getElementById('sheetOrientation');
+ const engineeringSheet=document.getElementById('engineeringSheet');
+ const titleFields={
+  sheetProject:'drawingProjectValue', sheetTitle:'drawingTitleValue', sheetDocNo:'drawingDocValue',
+  sheetDate:'drawingDateValue', sheetAuthor:'drawingAuthorValue', sheetRevision:'drawingRevValue',
+  sheetChecked:'drawingCheckedValue', sheetApproved:'drawingApprovedValue', sheetNumber:'drawingSheetValue'
+ };
+ const updateSheetPopupPreview=()=>{
+   const pairs={sheetProject:'previewProject',sheetTitle:'previewTitle',sheetDocNo:'previewDocNo',sheetAuthor:'previewAuthor',sheetChecked:'previewChecked',sheetApproved:'previewApproved',sheetRevision:'previewRevision'};
+   Object.entries(pairs).forEach(([inputId,previewId])=>{const input=document.getElementById(inputId),node=document.getElementById(previewId);if(input&&node)node.textContent=input.value.trim();});
+   const date=document.getElementById('sheetDate')?.value||'';
+   const dateNode=document.getElementById('previewDate');
+   if(dateNode&&date){const [y,m,d]=date.split('-');dateNode.textContent=`${d}-${m}-${y}`;}else if(dateNode)dateNode.textContent='';
+   const size=document.getElementById('sheetSize')?.value||'A4';
+   const number=document.getElementById('sheetNumber')?.value||'1/1';
+   const sizeNode=document.getElementById('previewSheetSize');if(sizeNode)sizeNode.textContent=`${number} · ${size}`;
+ };
+ Object.keys(titleFields).forEach(id=>document.getElementById(id)?.addEventListener('input',updateSheetPopupPreview));
+ document.getElementById('sheetSize')?.addEventListener('change',updateSheetPopupPreview);
+
+ function loadTitleFields(){
+  Object.entries(titleFields).forEach(([inputId,textId])=>{const input=document.getElementById(inputId);if(input)input.value=window.__escSafeStorage.getItem('esim-'+inputId)|| (inputId==='sheetNumber'?'1/1':'');});
+ }
+ function updateTitleBlock(){
+  Object.entries(titleFields).forEach(([inputId,textId])=>{const input=document.getElementById(inputId),node=document.getElementById(textId);if(input&&node){let value=input.value.trim();if(inputId==='sheetDate'&&/^\d{4}-\d{2}-\d{2}$/.test(value)){const [y,m,d]=value.split('-');value=`${d}-${m}-${y}`;}node.textContent=value;window.__escSafeStorage.setItem('esim-'+inputId,input.value);}});
+  const sizeNode=document.getElementById('drawingSizeValue');if(sizeNode)sizeNode.textContent=sheetSize?.value||'A4';
+ }
+ function applySheetOptions(){
+   const enabled=!!sheetEnabled?.checked;
+   body.classList.toggle('engineering-sheet-on',enabled);
+   if(engineeringSheet){engineeringSheet.setAttribute('aria-hidden',String(!enabled));engineeringSheet.style.display=enabled?'inline':'none';}
+   const sizeText=sheetSize?.value||'A4';
+   const sizeNode=document.getElementById('sheetSizeLabel');
+   if(sizeNode)sizeNode.textContent=sizeText;
+   if(sheetOrientation)body.dataset.sheetOrientation=sheetOrientation.value;
+   updateTitleBlock();
+   window.__escSafeStorage.setItem('esim-sheet-enabled',enabled?'on':'off');
+   window.__escSafeStorage.setItem('esim-sheet-size',sizeText);
+   window.__escSafeStorage.setItem('esim-sheet-orientation',sheetOrientation?.value||'landscape');
+   if(state)state.textContent=enabled?'ENGINEERING SHEET • '+sizeText.toUpperCase():'READY • NO SHEET BORDER';
+ }
+ loadTitleFields();
+ if(sheetEnabled){sheetEnabled.checked=false;window.__escSafeStorage.setItem('esim-sheet-enabled','off');}
+ if(sheetSize)sheetSize.value=window.__escSafeStorage.getItem('esim-sheet-size')||'A4';
+ if(sheetOrientation)sheetOrientation.value=window.__escSafeStorage.getItem('esim-sheet-orientation')||'landscape';
+ applySheetOptions();
+ const settingsSheetToggle=document.getElementById('settingsSheetToggle');
+ const settingsSheetState=document.getElementById('settingsSheetState');
+ if(settingsSheetToggle){settingsSheetToggle.checked=!!sheetEnabled?.checked;settingsSheetToggle.addEventListener('change',()=>{if(sheetEnabled){sheetEnabled.checked=settingsSheetToggle.checked;if(settingsSheetToggle.checked){if(!sheetPanel.classList.contains('open'))toggleSheetPanel();}else{applySheetOptions();}}if(settingsSheetState)settingsSheetState.textContent=settingsSheetToggle.checked?'On':'Off';});}
+ sheetEnabled?.addEventListener('change',()=>{if(settingsSheetToggle)settingsSheetToggle.checked=sheetEnabled.checked;if(settingsSheetState)settingsSheetState.textContent=sheetEnabled.checked?'On':'Off';});
+ function toggleSheetPanel(){
+  updateSheetPopupPreview();const open=!sheetPanel.classList.contains('open');sheetPanel.classList.toggle('open',open);sheetPanel.setAttribute('aria-hidden',String(!open));sheetBtn?.classList.toggle('active',open);}
+ Object.keys(titleFields).forEach(id=>document.getElementById(id)?.addEventListener('input',()=>{}));
+ sheetSize?.addEventListener('change',updateTitleBlock);
+ sheetBtn?.addEventListener('click',toggleSheetPanel);
+ document.getElementById('sheetClose')?.addEventListener('click',()=>{if(sheetEnabled)sheetEnabled.checked=false;if(settingsSheetToggle)settingsSheetToggle.checked=false;if(settingsSheetState)settingsSheetState.textContent='Off';applySheetOptions();sheetPanel.classList.remove('open');sheetPanel.setAttribute('aria-hidden','true');sheetBtn?.classList.remove('active')});
+ document.getElementById('sheetApply')?.addEventListener('click',()=>{if(sheetEnabled)sheetEnabled.checked=true;if(settingsSheetToggle)settingsSheetToggle.checked=true;if(settingsSheetState)settingsSheetState.textContent='On';applySheetOptions();sheetPanel.classList.remove('open');sheetPanel.setAttribute('aria-hidden','true');sheetBtn?.classList.remove('active')});
+ document.getElementById('sheetReset')?.addEventListener('click',()=>{sheetEnabled.checked=false;if(settingsSheetToggle)settingsSheetToggle.checked=false;if(settingsSheetState)settingsSheetState.textContent='Off';sheetSize.value='A4';sheetOrientation.value='landscape';Object.keys(titleFields).forEach(id=>{const el=document.getElementById(id);if(el)el.value=id==='sheetNumber'?'1/1':'';});applySheetOptions();sheetPanel.classList.remove('open');sheetPanel.setAttribute('aria-hidden','true');sheetBtn?.classList.remove('active')});
+ document.addEventListener('click',e=>{if(sheetPanel?.classList.contains('open')&&!sheetPanel.contains(e.target)&&!sheetBtn?.contains(e.target)){if(sheetEnabled)sheetEnabled.checked=false;if(settingsSheetToggle)settingsSheetToggle.checked=false;if(settingsSheetState)settingsSheetState.textContent='Off';applySheetOptions();sheetPanel.classList.remove('open');sheetPanel.setAttribute('aria-hidden','true');sheetBtn?.classList.remove('active')}});
+
+ gridBtn?.addEventListener('click',()=>{grid=!grid;window.__escSafeStorage.setItem('esim-grid',grid?'on':'off');render()}); render();
+})();
+</script>
+
+<script>
+/* Undo/Redo for component placement, movement, deletion and completed wires. */
+(()=>{
+ const svg=document.getElementById('schematic');
+ const drop=document.getElementById('dropLayer');
+ const wire=()=>document.getElementById('wireLayer');
+ const undoBtn=document.getElementById('undoBtn'), redoBtn=document.getElementById('redoBtn');
+ if(!svg||!drop||!undoBtn||!redoBtn)return;
+ let undoStack=[],redoStack=[],last='',restoreInProgress=false,saveTimer=null;
+ const snapshot=()=>JSON.stringify({drop:drop.innerHTML,wire:wire()?wire().innerHTML:''});
+ const updateButtons=()=>{undoBtn.disabled=undoStack.length<2;redoBtn.disabled=redoStack.length===0;};
+ const remember=()=>{
+   if(restoreInProgress)return;
+   const s=snapshot();
+   if(s===last)return;
+   undoStack.push(s); if(undoStack.length>100)undoStack.shift();
+   last=s; redoStack=[]; updateButtons();
+ };
+ const queueRemember=()=>{clearTimeout(saveTimer);saveTimer=setTimeout(remember,180);};
+ function rebind(){
+   drop.querySelectorAll('.dropped-symbol').forEach(g=>{
+     if(typeof enableMove==='function')enableMove(g);
+     if(typeof syncComponentPorts==='function')syncComponentPorts(g);
+   });
+   if(typeof refreshAllWires==='function')refreshAllWires();
+   if(typeof syncConnectedPortStates==='function')syncConnectedPortStates();
+ }
+ function apply(s){
+   restoreInProgress=true;
+   const obj=JSON.parse(s);
+   drop.innerHTML=obj.drop;
+   if(wire()){
+     wire().innerHTML=obj.wire;
+   }
+   rebind();
+   last=s;
+   restoreInProgress=false;
+   updateButtons();
+   document.getElementById('state').textContent='EDIT HISTORY RESTORED';
+ }
+ function undo(){
+   if(undoStack.length<2)return;
+   const current=undoStack.pop();redoStack.push(current);
+   apply(undoStack[undoStack.length-1]);
+ }
+ function redo(){
+   if(!redoStack.length)return;
+   const s=redoStack.pop();undoStack.push(s);apply(s);
+ }
+ undoBtn.addEventListener('click',undo);redoBtn.addEventListener('click',redo);
+ document.addEventListener('keydown',e=>{
+   if((e.ctrlKey||e.metaKey)&&e.key.toLowerCase()==='z'){e.preventDefault();undo();}
+   else if((e.ctrlKey||e.metaKey)&&(e.key.toLowerCase()==='y'||(e.shiftKey&&e.key.toLowerCase()==='z'))){e.preventDefault();redo();}
+ });
+ document.addEventListener('pointerup',queueRemember,true);
+ document.addEventListener('click',e=>{
+   if(e.target.closest('#delete')||e.target.closest('.mag-port'))queueRemember();
+ },true);
+ const observer=new MutationObserver(queueRemember);
+ observer.observe(drop,{childList:true,subtree:true,attributes:true,attributeFilter:['transform','data-x','data-y']});
+ const init=()=>{last=snapshot();undoStack=[last];updateButtons();};
+ setTimeout(init,350);
+})();
+</script>
+
+
+<script>
+(()=> {
+ const svg=document.getElementById('schematic'), sheet=document.getElementById('sheet'), drop=document.getElementById('dropLayer');
+ if(!svg||!sheet)return;
+ const vb=svg.viewBox.baseVal; let view={x:vb.x,y:vb.y,w:vb.width,h:vb.height}, pan=null, textMode=false;
+ const zoomKey='esc-show-zoom-panel-v1';
+ const zoomOn=window.__escSafeStorage.getItem(zoomKey)!=='off';
+ if(zoomOn){const cx=view.x+view.w/2,cy=view.y+view.h/2;view.w=Math.max(240,view.w/2);view.h=view.h/2;view.x=cx-view.w/2;view.y=cy-view.h/2;svg.setAttribute('viewBox',`${view.x} ${view.y} ${view.w} ${view.h}`);}
+ // Grid is drawn inside the SVG using user-space patterns. The SVG viewBox zooms
+ // grid, components, terminals and wires with one identical transform.
+ const syncGrid=()=>{
+   sheet.style.setProperty('background-image','none','important');
+   sheet.style.removeProperty('background-size');
+   sheet.style.removeProperty('background-position');
+ };
+ const apply=()=>{svg.setAttribute('viewBox',`${view.x} ${view.y} ${view.w} ${view.h}`);requestAnimationFrame(syncGrid)};
+ new MutationObserver(()=>requestAnimationFrame(syncGrid)).observe(svg,{attributes:true,attributeFilter:['viewBox']});
+ const zoom=(factor,cx=view.x+view.w/2,cy=view.y+view.h/2)=>{const nw=Math.max(240,Math.min(4000,view.w*factor)),nh=view.h*(nw/view.w);view.x=cx-(cx-view.x)*(nw/view.w);view.y=cy-(cy-view.y)*(nh/view.h);view.w=nw;view.h=nh;apply()};
+ window.addEventListener('esc-zoom-mode-change',e=>{const on=!!e.detail?.enabled;const cx=view.x+view.w/2,cy=view.y+view.h/2;const factor=on?0.5:2;const nw=Math.max(240,Math.min(4000,view.w*factor)),nh=view.h*(nw/view.w);view={x:cx-nw/2,y:cy-nh/2,w:nw,h:nh};apply();});
+ document.getElementById('zoomInBtn')?.addEventListener('click',()=>zoom(.8));
+ document.getElementById('zoomOutBtn')?.addEventListener('click',()=>zoom(1.25));
+ document.getElementById('centerViewBtn')?.addEventListener('click',()=>{view={x:0,y:0,w:1200,h:760};apply()});
+ document.getElementById('fitBtn')?.addEventListener('click',()=>{view={x:0,y:0,w:1200,h:760};apply();document.getElementById('state').textContent='READY • FIT VIEW'});
+ document.getElementById('insertTextBtn')?.addEventListener('click',e=>{textMode=!textMode;e.currentTarget.classList.toggle('active',textMode);document.getElementById('state').textContent=textMode?'TEXT MODE • CLICK WORKSPACE TO PLACE TEXT':'TEXT MODE OFF'});
+ const point=e=>{try{const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const m=svg.getScreenCTM();if(m){const p=pt.matrixTransform(m.inverse());return{x:p.x,y:p.y}}}catch(_){}const r=svg.getBoundingClientRect();return{x:view.x+(e.clientX-r.left)/r.width*view.w,y:view.y+(e.clientY-r.top)/r.height*view.h}};
+ svg.addEventListener('wheel',e=>{e.preventDefault();const p=point(e);zoom(e.deltaY<0?.88:1.14,p.x,p.y)},{passive:false});
+ svg.addEventListener('contextmenu',e=>{if(document.getElementById('connectToggle')?.classList.contains('active'))e.preventDefault()});
+ svg.addEventListener('pointerdown',e=>{
+   const panMode=document.body.classList.contains('pan-mode');
+   if((e.button!==0 && e.button!==1) || e.target.closest('.dropped-symbol') || e.target.closest('.mag-port') || e.target.closest('.connected-wire'))return;
+   // Left-drag on empty workspace pans the complete drawing. Component drags are
+   // handled by the existing component-drag handler and are intentionally untouched.
+   const isEmptyWorkspace=(e.target===svg || e.target.id==='dropLayer' || e.target.classList?.contains('esc-svg-grid'));
+   if(e.button===0 && !panMode && !isEmptyWorkspace)return;
+   const st=document.getElementById('state')?.textContent||'';
+   if(window.__escWiringActive||st.startsWith('WIRE START')||st.startsWith('WIRE BEND')||st.startsWith('TERMINAL SELECTED'))return;
+   if(textMode){const p=point(e),g=document.createElementNS('http://www.w3.org/2000/svg','g');g.setAttribute('class','drawing-text-object');g.setAttribute('transform',`translate(${p.x} ${p.y}) rotate(0)`);g.dataset.rotation='0';g.dataset.textObject='true';const t=document.createElementNS('http://www.w3.org/2000/svg','text');t.setAttribute('class','drawing-text');t.setAttribute('x','0');t.setAttribute('y','0');t.setAttribute('fill','var(--drawing-text-color, #ffffff)');t.setAttribute('font-size','10');t.setAttribute('xml:space','preserve');t.textContent='Double-click to edit';g.appendChild(t);const hit=document.createElementNS('http://www.w3.org/2000/svg','rect');hit.setAttribute('class','drawing-text-hit');hit.setAttribute('x','-8');hit.setAttribute('y','-24');hit.setAttribute('width','210');hit.setAttribute('height','34');hit.setAttribute('fill','transparent');hit.setAttribute('stroke','none');g.insertBefore(hit,t);drop.appendChild(g);enableDrawingText(g);selectDrawingText(g);textMode=false;document.getElementById('insertTextBtn')?.classList.remove('active');document.getElementById('state').textContent='TEXT ADDED • DOUBLE-CLICK TO EDIT';return;}
+   const rect=svg.getBoundingClientRect();
+   pan={clientX:e.clientX,clientY:e.clientY,x:view.x,y:view.y,unitsPerPixelX:view.w/Math.max(1,rect.width),unitsPerPixelY:view.h/Math.max(1,rect.height),pointerId:e.pointerId};
+   svg.classList.add('panning');e.preventDefault();
+   try{svg.setPointerCapture(e.pointerId)}catch{}
+ });
+ svg.addEventListener('pointermove',e=>{
+   if(!pan || (e.pointerId!=null && e.pointerId!==pan.pointerId))return;
+   // Calculate from the original screen position, not a world point that changes
+   // as the viewBox moves. This prevents feedback/jitter and keeps panning smooth.
+   view.x=pan.x-(e.clientX-pan.clientX)*pan.unitsPerPixelX;
+   view.y=pan.y-(e.clientY-pan.clientY)*pan.unitsPerPixelY;
+   apply();
+ });
+ const stop=e=>{if(pan){const id=pan.pointerId;pan=null;svg.classList.remove('panning');try{if(svg.hasPointerCapture(id))svg.releasePointerCapture(id)}catch{}}};
+ svg.addEventListener('pointerup',stop);svg.addEventListener('pointercancel',stop);
+ window.addEventListener('resize',()=>requestAnimationFrame(syncGrid));
+ if(window.ResizeObserver){new ResizeObserver(()=>requestAnimationFrame(syncGrid)).observe(sheet);new ResizeObserver(()=>requestAnimationFrame(syncGrid)).observe(svg)}
+ requestAnimationFrame(syncGrid);
+})();
+</script>
+
+<script>
+/* ESC utility menus: Account, Notifications and About. */
+(()=>{
+ const panel=document.getElementById('escUtilityPopover'), title=document.getElementById('utilityTitle'), body=document.getElementById('utilityBody');
+ const buttons={account:document.getElementById('accountBtn'),notifications:document.getElementById('notificationsBtn'),about:document.getElementById('aboutBtn')};
+ const dot=document.getElementById('notificationDot');
+ const notifications=[{title:'Workspace ready',text:'Your schematic workspace is ready.'}];
+ function show(kind){
+  if(!panel)return;
+  const content={
+   account:{heading:'ESC Account',html:'<p><b>Local workspace</b></p><p class="utility-muted">This version stores your work in the current browser session unless you use Save or Save As.</p><button type="button" id="accountSaveHint">Save drawing</button>'},
+   notifications:{heading:'Notifications',html:notifications.map(n=>'<p><b>'+n.title+'</b><br>'+n.text+'</p>').join('')+'<button type="button" id="clearNotifications">Mark all as read</button>'},
+   about:{heading:'About ELECTRICAL SIMU CKT',html:'<p><b>ELECTRICAL SIMU CKT</b></p><p>Design • Simulate • Control • Visualize</p><p class="utility-muted">IEC schematic editor and circuit workspace.</p><p class="utility-muted">Version: 1.0</p>'}
+  }[kind];
+  title.textContent=content.heading;body.innerHTML=content.html;panel.classList.add('open');panel.setAttribute('aria-hidden','false');
+  Object.values(buttons).forEach(b=>b?.classList.remove('active'));buttons[kind]?.classList.add('active');
+  document.getElementById('clearNotifications')?.addEventListener('click',()=>{notifications.length=0;dot.hidden=true;body.innerHTML='<p>No new notifications.</p>';});
+  document.getElementById('accountSaveHint')?.addEventListener('click',()=>{document.getElementById('saveAsBtn')?.click();document.getElementById('saveBtn')?.click();});
+ }
+ Object.entries(buttons).forEach(([kind,b])=>b?.addEventListener('click',()=>{if(panel.classList.contains('open')&&b.classList.contains('active')){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');b.classList.remove('active')}else show(kind)}));
+ document.getElementById('utilityClose')?.addEventListener('click',()=>{panel.classList.remove('open');panel.setAttribute('aria-hidden','true');Object.values(buttons).forEach(b=>b?.classList.remove('active'))});
+ document.addEventListener('click',e=>{if(panel.classList.contains('open')&&!panel.contains(e.target)&&!Object.values(buttons).some(b=>b&&b.contains(e.target))){panel.classList.remove('open');panel.setAttribute('aria-hidden','true');Object.values(buttons).forEach(b=>b?.classList.remove('active'))}});
+})();
+</script>
+<script>
+/* Ribbon labels stay compact; reveal their names on hover. */
+document.querySelectorAll(".top nav button").forEach(button => {
+  const label = button.querySelector("em");
+  if (label) {
+    button.title = label.textContent.trim();
+    button.setAttribute("aria-label", label.textContent.trim());
+  }
+});
+</script>
+<script>if('serviceWorker' in navigator && location.protocol!=='file:'){window.addEventListener('load',()=>navigator.serviceWorker.register('./sw.js').catch(()=>{}));}</script>
+
+<script>
+/* Approved ribbon actions: New, Open, Save, Save As, Rotate, Select and Pan. */
+(()=>{
+ const $=id=>document.getElementById(id);
+ const svg=$('schematic'), drop=$('dropLayer'), state=$('state'), panBtn=$('panBtn'), selectBtn=$('selectBtn');
+ let currentName='Untitled ESC Drawing';
+ const setStatus=s=>{if(state)state.textContent=s};
+ function exportProject(forceName=false){
+   if(!drop){setStatus('SAVE FAILED • DRAWING LAYER NOT FOUND');return}
+   if(forceName){currentName=(currentName||'Untitled ESC Drawing')}
+   const wireLayerEl=document.getElementById('wireLayer');
+   const wiresClone=wireLayerEl?wireLayerEl.cloneNode(true):null;
+   wiresClone?.querySelectorAll('.wire-preview').forEach(n=>n.remove());
+   const project={format:'ESC-DRAWING',version:1,name:currentName,savedAt:new Date().toISOString(),viewBox:svg?.getAttribute('viewBox')||'0 0 1200 760',elements:drop.innerHTML,wires:wiresClone?wiresClone.innerHTML:''};
+   const serialized=JSON.stringify(project,null,2);
+   try{window.__escSafeStorage.setItem('esc-simu-ckt-saved-drawing',serialized);window.__escSafeStorage.setItem('esc-simu-ckt-saved-name',currentName);}catch(err){setStatus('BROWSER STORAGE FULL • USE SAVE AS');}
+   if(forceName){
+     const blob=new Blob([serialized],{type:'application/json'});
+     const url=URL.createObjectURL(blob),a=document.createElement('a');
+     a.href=url;a.download=currentName.replace(/[^\w\- ]+/g,'').trim().replace(/\s+/g,'_')+'.esc.json';
+     document.body.appendChild(a);a.click();a.remove();setTimeout(()=>URL.revokeObjectURL(url),1000);
+     setStatus('SAVED FILE • '+currentName.toUpperCase());
+   }else setStatus('SAVED IN THIS BROWSER • '+currentName.toUpperCase());
+ }
+ $('newBtn')?.addEventListener('click',()=>{
+   
+   if(drop)drop.replaceChildren();
+   document.querySelectorAll('#wireLayer .connected-wire').forEach(w=>w.remove());
+   if(typeof window.cancelActiveWiring==='function')window.cancelActiveWiring('');
+   currentName='Untitled ESC Drawing';
+   $('stop')?.click();setStatus('READY • NEW DRAWING');
+   selectBtn?.click();
+ });
+ $('saveBtn')?.addEventListener('click',()=>exportProject(false));
+ $('saveAsBtn')?.addEventListener('click',()=>exportProject(true));
+ $('openBtn')?.addEventListener('click',()=>$('openFileInput')?.click());
+ $('openFileInput')?.addEventListener('change',async e=>{
+   const file=e.target.files?.[0];if(!file)return;
+   try{
+     const data=JSON.parse(await file.text());
+     if(data.format!=='ESC-DRAWING'||typeof data.elements!=='string')throw new Error('This is not an ESC drawing file.');
+     const parser=new DOMParser(),parsed=parser.parseFromString('<svg xmlns="http://www.w3.org/2000/svg">'+data.elements+'</svg>','image/svg+xml');
+     if(parsed.querySelector('parsererror'))throw new Error('The drawing file is damaged.');
+     const allowed=new Set(['g','path','line','polyline','polygon','rect','circle','ellipse','text','image','use']);
+     const cleanNode=node=>{
+       if(node.nodeType===Node.TEXT_NODE)return document.createTextNode(node.textContent);
+       if(node.nodeType!==Node.ELEMENT_NODE||!allowed.has(node.localName))return null;
+       const el=document.createElementNS('http://www.w3.org/2000/svg',node.localName);
+       for(const a of [...node.attributes])if(!/^on/i.test(a.name)&&a.name!=='style'&&a.name!=='href'&&a.name!=='xlink:href')el.setAttribute(a.name,a.value);
+       if(node.localName==='image'||node.localName==='use'){
+         const href=node.getAttribute('href')||node.getAttributeNS('http://www.w3.org/1999/xlink','href')||'';
+         if(href.startsWith('assets/')||href.startsWith('components/')||href.startsWith('power-original/')||href.startsWith('#'))el.setAttribute('href',href);
+       }
+       [...node.childNodes].forEach(c=>{const clean=cleanNode(c);if(clean)el.appendChild(clean)});
+       return el;
+     };
+     const fragment=document.createDocumentFragment();
+     [...parsed.documentElement.childNodes].forEach(n=>{const clean=cleanNode(n);if(clean)fragment.appendChild(clean)});
+     drop.replaceChildren(fragment);
+     const wireLayerEl=document.getElementById('wireLayer');
+     if(wireLayerEl){
+       wireLayerEl.querySelectorAll('.connected-wire').forEach(w=>w.remove());
+       if(typeof data.wires==='string' && data.wires.trim()){
+         const wp=parser.parseFromString('<svg xmlns="http://www.w3.org/2000/svg">'+data.wires+'</svg>','image/svg+xml');
+         const previewEl=wireLayerEl.querySelector('.wire-preview');
+         [...wp.documentElement.childNodes].forEach(n=>{
+           const clean=cleanNode(n);
+           if(clean && clean.classList?.contains('connected-wire')){
+             if(previewEl)wireLayerEl.insertBefore(clean,previewEl);
+             else wireLayerEl.appendChild(clean);
+           }
+         });
+       }
+     }
+     drop.querySelectorAll('.dropped-symbol').forEach(g=>{if(typeof upgradeComponentToInlineSvg==='function')upgradeComponentToInlineSvg(g);if(typeof syncComponentPorts==='function')syncComponentPorts(g);});
+     if(typeof refreshAllWires==='function')refreshAllWires();
+     if(typeof syncConnectedPortStates==='function')syncConnectedPortStates();
+     currentName=data.name||file.name.replace(/\.esc\.json$/i,'');
+     if(svg&&data.viewBox)svg.setAttribute('viewBox',data.viewBox);
+     setStatus('OPENED • '+currentName.toUpperCase());
+   }catch(err){setStatus('OPEN FAILED • '+(err&&err.message?err.message:'INVALID FILE'))}
+   e.target.value='';
+ });
+ $('rotateBtn')?.addEventListener('click',()=>{
+    if(window.__escSelectedDrawingText?.isConnected)return;
+   if(!selected || !selected.isConnected){setStatus('ROTATE • SELECT A COMPONENT FIRST');return;}
+   const angle=((Number(selected.dataset.rotation)||0)+90)%360;
+   selected.dataset.rotation=String(angle);
+   applyComponentTransform(selected);
+   if(typeof refreshWiresForComponent==='function')refreshWiresForComponent(selected);
+   select(selected);
+   setStatus('ROTATED • '+(selected.dataset.ref||selected.dataset.name||'COMPONENT')+' • '+angle+'°');
+ });
+ selectBtn?.addEventListener('click',()=>{
+   document.body.classList.remove('pan-mode');
+   panBtn?.classList.remove('active');selectBtn.classList.add('active');
+   setStatus('SELECT MODE • CLICK OR DRAG COMPONENTS');
+ });
+ panBtn?.addEventListener('click',()=>{
+   const active=!document.body.classList.contains('pan-mode');
+   document.body.classList.toggle('pan-mode',active);panBtn.classList.toggle('active',active);selectBtn?.classList.toggle('active',!active);
+   setStatus(active?'PAN MODE • DRAG THE DRAWING':'SELECT MODE • CLICK OR DRAG COMPONENTS');
+ });
+ // Wheel zoom is already supported; Fit returns to the complete engineering sheet viewBox.
+ $('fitBtn')?.addEventListener('click',()=>{
+   if(svg)svg.setAttribute('viewBox','0 0 1200 760');
+   setStatus('READY • FIT DRAWING');
+ });
+})();
+</script>
+
+
+<script>
+/* Workspace zoom toggle: double-click a library symbol to insert it in the workspace. */
+(()=>{
+ const toggle=document.getElementById('showZoomPanel');
+ const host=document.getElementById('libraryGroups');
+ const svg=document.getElementById('schematic');
+ const status=document.getElementById('state');
+ if(!toggle||!host||!svg)return;
+ const KEY='esc-show-zoom-panel-v1';
+ let enabled=window.__escSafeStorage.getItem(KEY)!=='off';
+ toggle.checked=enabled;
+ const label=toggle.closest('.zoom-panel-setting')?.querySelector('.zoom-panel-state');
+ const zoomControlsEl=document.getElementById('workspaceZoomControls');
+ const syncZoomControlsVisibility=()=>{if(zoomControlsEl)zoomControlsEl.style.display='flex';};
+ const setLabel=()=>{if(label)label.textContent=toggle.checked?'On':'Off';syncZoomControlsVisibility();};
+ const setWorkspaceZoom=on=>window.dispatchEvent(new CustomEvent('esc-zoom-mode-change',{detail:{enabled:on}}));
+ toggle.addEventListener('change',()=>{enabled=toggle.checked;window.__escSafeStorage.setItem(KEY,enabled?'on':'off');setLabel();setWorkspaceZoom(enabled);if(status)status.textContent=enabled?'WORKSPACE ZOOM ON':'WORKSPACE ZOOM OFF';});
+ setLabel();
+ host.addEventListener('dblclick',e=>{
+   const btn=e.target.closest('.symbol-btn');if(!btn)return;
+   e.preventDefault();e.stopPropagation();
+   if(window.__escLastLibInsertTime && (Date.now() - window.__escLastLibInsertTime) < 600) return;
+   if(typeof makeDropped!=='function'){if(status)status.textContent='COMPONENT INSERTION IS NOT AVAILABLE YET';return;}
+   const d={type:btn.dataset.symbol||btn.dataset.name,name:btn.dataset.name||btn.dataset.symbol,ref:btn.dataset.ref||'',accent:btn.dataset.accent||'#b7b9bc',symbolFile:btn.dataset.file||''};
+   const scale=1;
+   const x=600,y=380;
+   const g=makeDropped(d,x,y);
+   if(!g)return;
+   g.dataset.libraryScale='1';
+   g.setAttribute('transform',`translate(${x-60},${y-45})`);
+   g.dataset.x=String(x);g.dataset.y=String(y);
+   if(status)status.textContent=`INSERTED • ${d.name.toUpperCase()}${enabled?' • WORKSPACE ZOOM':''}`;
+ });
+})();
+</script>
+
+
+<script>
+/* ESC drag controller v39: capture the pointer before any older handler can cancel it. */
+(function installFinalWorkspaceDrag(){
+  const svg=document.getElementById('schematic');
+  const layer=document.getElementById('dropLayer');
+  if(!svg||!layer||svg.dataset.finalDragInstalled==='1')return;
+  svg.dataset.finalDragInstalled='1';
+  let active=null;
+  let lastDown={g:null, time:0};
+  function point(e){
+    const m=svg.getScreenCTM();
+    if(m){const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;const p=pt.matrixTransform(m.inverse());return{x:p.x,y:p.y};}
+    const r=svg.getBoundingClientRect(),v=svg.viewBox.baseVal;
+    return{x:v.x+(e.clientX-r.left)*v.width/r.width,y:v.y+(e.clientY-r.top)*v.height/r.height};
+  }
+  svg.addEventListener('pointerdown',function(e){
+    if(e.button!==0||document.body.classList.contains('live')||window.__escWiringActive||window.__escWireEditingActive||e.target.closest?.('.mag-port')||e.target.closest?.('.connected-wire'))return;
+    if(typeof window.resolvePortFromEvent==='function' && window.resolvePortFromEvent(e, 11))return;
+    const g=e.target.closest?.('#dropLayer .dropped-symbol');
+    if(!g)return;
+    const now=Date.now();
+    const isDouble=(e.detail>=2)||(lastDown.g===g && (now-lastDown.time)<=450);
+    lastDown=isDouble?{g:null,time:0}:{g,time:now};
+    if(isDouble){
+      active=null;
+      if(typeof select==='function') select(g, true);
+      const panel=document.getElementById('propertyPanel');
+      if(panel){panel.classList.add('open');panel.setAttribute('aria-hidden','false');}
+      const status=document.getElementById('state');
+      if(status) status.textContent='COMPONENT DETAILS • '+(g.dataset.ref||g.dataset.name||'COMPONENT');
+      e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+      return;
+    }
+    const p=point(e),x=Number(g.dataset.x)||0,y=Number(g.dataset.y)||0;
+    active={g,id:e.pointerId,dx:p.x-x,dy:p.y-y,startX:p.x,startY:p.y,moved:false};
+    const keepOpen=document.getElementById('propertyPanel')?.classList.contains('open') && (typeof selected!=='undefined' && selected===g);
+    if(typeof select==='function') select(g, Boolean(keepOpen));
+    const status=document.getElementById('state'); if(status) status.textContent='SELECTED • '+(g.dataset.ref||g.dataset.name||'COMPONENT');
+    g.classList.add('moving');g.style.cursor='grabbing';
+    e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+    try{svg.setPointerCapture(e.pointerId)}catch(_){ }
+  },true);
+  window.addEventListener('pointermove',function(e){
+    if(!active||e.pointerId!==active.id)return;
+    const g=active.g;if(!g?.isConnected){active=null;return;}
+    const p=point(e);
+    let x=p.x-active.dx, y=p.y-active.dy;
+    if(Math.hypot(p.x-active.startX,p.y-active.startY)>2)active.moved=true;
+    if(typeof window.snapComponentToTerminalAxes==='function'){
+      const snapped=window.snapComponentToTerminalAxes(g, x, y, 6);
+      x=snapped.x;
+      y=snapped.y;
+    }
+    g.dataset.x=String(x);g.dataset.y=String(y);
+    if(typeof applyComponentTransform==='function')applyComponentTransform(g,x,y);
+    else g.setAttribute('transform',`translate(${x-60},${y-45})`);
+    if(typeof refreshWiresForComponent==='function')refreshWiresForComponent(g);
+    if(typeof window.updateSelectedTerminalAxes==='function')window.updateSelectedTerminalAxes(g);
+    if(active.moved)e.preventDefault();
+  },{capture:true,passive:false});
+  function finish(e){
+    if(!active||(e.pointerId!=null&&e.pointerId!==active.id))return;
+    const a=active,g=a.g;active=null;
+    if(g){g.classList.remove('moving');g.style.cursor='grab';if(a.moved){e.preventDefault?.();g.dataset.dragJustFinished='1';setTimeout(()=>delete g.dataset.dragJustFinished,300);}}
+    try{if(svg.hasPointerCapture(e.pointerId))svg.releasePointerCapture(e.pointerId)}catch(_){ }
+  }
+  window.addEventListener('pointerup',finish,true);
+  window.addEventListener('pointercancel',finish,true);
+})();
+</script>
+
+
+<script>
+/* V53: tight component selection outline and vertical component comments. */
+(()=>{
+ const $=id=>document.getElementById(id), layer=$('dropLayer'), status=$('state');
+ const setStatus=t=>{if(status)status.textContent=t};
+ function removeSelected(){
+   if(window.selectedWire && window.selectedWire.isConnected){
+     window.selectedWire.remove();
+     window.selectedWire=null;
+     if(typeof syncConnectedPortStates==='function')syncConnectedPortStates();
+     setStatus('WIRE DELETED');
+     return;
+   }
+   const g=typeof selected!=='undefined'?selected:null;
+   if(!g||!g.isConnected){setStatus('SELECT A COMPONENT OR WIRE FIRST');return;}
+   const uid=g.dataset.uid;
+   document.querySelectorAll('#wireLayer .connected-wire').forEach(w=>{if((uid&&w.dataset.fromG===uid)||(uid&&w.dataset.toG===uid))w.remove();});
+   if(typeof window.cancelActiveWiring==='function')window.cancelActiveWiring('');
+   g.remove(); if(typeof select==='function')select(null);
+   if(typeof syncConnectedPortStates==='function')syncConnectedPortStates();
+   setStatus('COMPONENT DELETED');
+ }
+ // Capture-phase selection makes the clicked placed component authoritative.
+ layer?.addEventListener('pointerdown',e=>{
+   if(e.button!==0||document.body.classList.contains('live')||window.__escWiringActive||window.__escWireEditingActive||e.target.closest?.('.mag-port')||e.target.closest?.('.connected-wire'))return;
+   if(typeof window.resolvePortFromEvent==='function' && window.resolvePortFromEvent(e, 11))return;
+   const g=e.target.closest?.('.dropped-symbol'); if(!g)return;
+   const isDbl = e.detail >= 2 || (document.getElementById('propertyPanel')?.classList.contains('open') && typeof selected!=='undefined' && selected===g);
+   if(typeof select==='function')select(g, Boolean(isDbl));
+   setStatus((isDbl?'COMPONENT DETAILS • ':'SELECTED • ')+(g.dataset.ref||g.dataset.name||'COMPONENT'));
+ },true);
+ // Delegated handler also covers components restored from a saved drawing.
+ // Their per-node listeners are not retained when SVG markup is reloaded.
+ layer?.addEventListener('dblclick',e=>{
+   const g=e.target.closest?.('.dropped-symbol');
+   if(!g || e.target.closest?.('.mag-port') || e.target.closest?.('.connected-wire'))return;
+   e.preventDefault();
+   e.stopPropagation();
+   if(typeof select==='function')select(g,true);
+   const panel=document.getElementById('propertyPanel');
+   if(panel){panel.classList.add('open');panel.setAttribute('aria-hidden','false');}
+   setStatus('COMPONENT DETAILS • '+(g.dataset.ref||g.dataset.name||'COMPONENT'));
+ },true);
+ $('delete')?.addEventListener('click',e=>{e.preventDefault();e.stopImmediatePropagation();removeSelected();},true);
+ $('propertyDelete')?.remove();
+ $('propertyOk')?.addEventListener('click',e=>{
+   e.preventDefault();
+   const g=typeof selected!=='undefined'?selected:null;
+   if(!g||!g.isConnected){setStatus('NO COMPONENT SELECTED');return;}
+   const tag=$('propTag')?.value.trim(),comment=$('propComment')?.value.trim()||'';
+   if(tag){g.dataset.ref=tag;const t=g.querySelector('.drop-tag');if(t)t.textContent=tag;}
+   g.dataset.comment=comment;
+    let note=g.querySelector('.drop-comment');
+    if(!note){note=document.createElementNS('http://www.w3.org/2000/svg','text');note.setAttribute('class','drop-comment');g.appendChild(note);}
+    if(typeof window.layoutComponentAnnotations==='function')window.layoutComponentAnnotations(g);
+   note.textContent=comment;note.style.display=comment?'':'none';
+   const title=g.querySelector('title');if(title)title.textContent=(g.dataset.ref||'')+' — '+(g.dataset.name||'Component')+(comment?' • '+comment:'');
+   setStatus('COMPONENT PROPERTIES SAVED');
+ });
+ document.addEventListener('keydown',e=>{if(e.key==='Delete'&&!(e.target instanceof HTMLInputElement)&&!(e.target instanceof HTMLTextAreaElement)&&(selected||window.selectedWire)){e.preventDefault();removeSelected();}},true);
+})();
+</script>
+
+
+<script>
+/* V54: tight artwork frame, configurable selected colours, no hover fill, and selected-component crosshair axes. */
+(function ESCV54(){
+  const svg=document.getElementById('schematic');
+  const layer=document.getElementById('dropLayer');
+  const settings=document.getElementById('escSettingsPopover');
+  if(!svg||!layer) return;
+  const NS='http://www.w3.org/2000/svg';
+  const get=(id)=>document.getElementById(id);
+  const componentPicker=get('escComponentColor'), borderPicker=get('escBorderColor');
+  const componentKey='esc-selected-component-color-v57', borderKey='esc-selection-border-color-v57';
+  let componentColor=window.__escSafeStorage.getItem(componentKey)||'#2584ff';
+  let borderColor=window.__escSafeStorage.getItem(borderKey)||'#168dff';
+  if(componentPicker) componentPicker.value=componentColor;
+  if(borderPicker) borderPicker.value=borderColor;
+
+  let defs=svg.querySelector('defs');
+  if(!defs){defs=document.createElementNS(NS,'defs');svg.insertBefore(defs,svg.firstChild);}
+  let filter=defs.querySelector('#escSelectedComponentTint');
+  if(!filter){
+    filter=document.createElementNS(NS,'filter');
+    filter.setAttribute('id','escSelectedComponentTint');
+    filter.setAttribute('x','-20%');filter.setAttribute('y','-20%');
+    filter.setAttribute('width','140%');filter.setAttribute('height','140%');
+    filter.setAttribute('color-interpolation-filters','sRGB');
+    const flood=document.createElementNS(NS,'feFlood');
+    flood.setAttribute('id','escSelectedTintFlood');flood.setAttribute('flood-color',componentColor);flood.setAttribute('result','tint');
+    const composite=document.createElementNS(NS,'feComposite');
+    composite.setAttribute('in','tint');composite.setAttribute('in2','SourceAlpha');composite.setAttribute('operator','in');composite.setAttribute('result','colored');
+    filter.append(flood,composite);defs.appendChild(filter);
+  }
+  const flood=get('escSelectedTintFlood');
+  const axes=document.createElementNS(NS,'g');
+  axes.setAttribute('id','escSelectedComponentAxes');
+  axes.setAttribute('display','none');
+  axes.setAttribute('pointer-events','none');
+  svg.insertBefore(axes,layer);
+
+  function renderTerminalAlignmentAxes(targetComp){
+    if(axes.parentNode!==svg){
+      svg.insertBefore(axes,layer);
+    }
+    axes.replaceChildren();
+    if(!targetComp || !targetComp.isConnected || document.body.classList.contains('live')){
+      axes.setAttribute('display','none');
+      axes.removeAttribute('data-active');
+      return;
+    }
+    const ports=(typeof window.absolutePorts==='function') ? window.absolutePorts(targetComp) : [];
+    const bandWidth=String(window.ESC_TERMINAL_SIZE || 3.8);
+    const uniqueX=[];
+    const uniqueY=[];
+    if(ports.length){
+      ports.forEach(p=>{
+        if(Number.isFinite(p.x) && !uniqueX.some(x=>Math.abs(x-p.x)<0.25)) uniqueX.push(p.x);
+        if(Number.isFinite(p.y) && !uniqueY.some(y=>Math.abs(y-p.y)<0.25)) uniqueY.push(p.y);
+      });
+    } else {
+      const cx=Number(targetComp.dataset.x)||0, cy=Number(targetComp.dataset.y)||0;
+      uniqueX.push(cx);
+      uniqueY.push(cy);
+    }
+    uniqueX.forEach(x=>{
+      const vLine=document.createElementNS(NS,'line');
+      vLine.setAttribute('class','esc-terminal-align-line esc-align-vertical');
+      vLine.setAttribute('x1',String(x));
+      vLine.setAttribute('x2',String(x));
+      vLine.setAttribute('y1','-10000');
+      vLine.setAttribute('y2','10000');
+      vLine.setAttribute('stroke-width',bandWidth);
+      axes.appendChild(vLine);
+    });
+    uniqueY.forEach(y=>{
+      const hLine=document.createElementNS(NS,'line');
+      hLine.setAttribute('class','esc-terminal-align-line esc-align-horizontal');
+      hLine.setAttribute('x1','-10000');
+      hLine.setAttribute('x2','10000');
+      hLine.setAttribute('y1',String(y));
+      hLine.setAttribute('y2',String(y));
+      hLine.setAttribute('stroke-width',bandWidth);
+      axes.appendChild(hLine);
+    });
+    axes.setAttribute('display','');
+    axes.setAttribute('data-active','1');
+  }
+  window.updateSelectedTerminalAxes=renderTerminalAlignmentAxes;
+
+  function applyBox(g){
+    const box=g.querySelector(':scope > .select-box');
+    if(!box) return;
+    const fallback={w:78,h:82};
+    const set=(ar, vhOpt=472.5)=>{
+      // Universal 2/15 px/unit scale: standard components (vh <= 500) have height 63,
+      // while larger motor symbols (vh > 500) scale proportionally around (60, 44.5).
+      let h = (vhOpt > 500) ? (vhOpt * 63 / 472.5) : 63;
+      let w = h * ar;
+      if(!Number.isFinite(w)||!Number.isFinite(h)||w<18||h<18){w=52;h=56;}
+      const pad=4;
+      box.setAttribute('x',String(60-(w/2)-pad));
+      box.setAttribute('y',String(44.5-(h/2)-pad));
+      box.setAttribute('width',String(w+pad*2));
+      box.setAttribute('height',String(h+pad*2));
+      box.setAttribute('rx','1');
+    };
+    const path=g.dataset.symbolFile||g.dataset.porttype||'';
+    if(!/\.svg(?:$|\?)/i.test(path)){set(1);return;}
+    if(typeof window.getSvgCatalogEntry==='function'){
+      const catEntry=window.getSvgCatalogEntry(path);
+      if(catEntry&&catEntry.vb){
+        const vb=catEntry.vb;
+        const vw=vb.length===4?vb[2]:vb[0], vh=vb.length===4?vb[3]:vb[1];
+        if(vw>0&&vh>0){
+          set(vw/vh, vh);
+          g.dataset.escBoxReady='1';
+          return;
+        }
+      }
+    }
+    if(g.dataset.escBoxReady==='1')return;
+    g.dataset.escBoxReady='1';
+    fetch(path).then(r=>r.ok?r.text():Promise.reject()).then(text=>{
+      const match=text.match(/viewBox\s*=\s*["']\s*([-\d.]+)[,\s]+([-\d.]+)[,\s]+([-\d.]+)[,\s]+([-\d.]+)\s*["']/i);
+      if(match){const w=Number(match[3]),h=Number(match[4]);if(w>0&&h>0)set(w/h);else set(1);}
+      else set(1);
+    }).catch(()=>set(1));
+  }
+  let isUpdatingV54 = false;
+  function update(){
+    if(isUpdatingV54) return;
+    isUpdatingV54 = true;
+    try {
+    const selected=layer.querySelector('.dropped-symbol.selected');
+    renderTerminalAlignmentAxes(selected);
+    if(selected){
+      selected.style.setProperty('--esc-selection-border',borderColor);
+      selected.style.setProperty('--esc-selected-component',componentColor);
+      applyBox(selected);
+    }
+    layer.querySelectorAll('.dropped-symbol:not(.selected)').forEach(g=>{
+      g.style.removeProperty('--esc-selection-border');
+      g.style.removeProperty('--esc-selected-component');
+      applyBox(g);
+    });
+    if(flood)flood.setAttribute('flood-color',componentColor);
+    } finally {
+      isUpdatingV54 = false;
+    }
+  }
+  function setColors(){
+    componentColor=componentPicker?.value||componentColor;
+    borderColor=borderPicker?.value||borderColor;
+    window.__escSafeStorage.setItem(componentKey,componentColor);
+    window.__escSafeStorage.setItem(borderKey,borderColor);
+    update();
+  }
+  componentPicker?.addEventListener('input',setColors);
+  borderPicker?.addEventListener('input',setColors);
+  // Recompute the overlay when selection, component position, rotation, or drawing contents change.
+  const observer=new MutationObserver(()=>update());
+  observer.observe(layer,{subtree:true,childList:true,attributes:true,attributeFilter:['class','transform','data-x','data-y','data-rotation']});
+  // Update the terminal alignment lines during a component drag without intercepting pointer or wire handling.
+  layer.addEventListener('pointermove',()=>{
+    const selected=layer.querySelector('.dropped-symbol.selected');
+    if(selected) renderTerminalAlignmentAxes(selected);
+  },true);
+  // Do not create any hover tint: the selection frame is transparent except for its border.
+  update();
+})();
+</script>
+
+
+<script id="library-toggle-v68">
+/* V67: capture the library controls before any older/duplicate handlers can override them. */
+(function () {
+  const body = document.body;
+  const getNodes = () => {
+    const layout = document.querySelector('.layout');
+    return {
+      button: document.getElementById('libraryToggle'),
+      arrow: document.getElementById('libraryCollapseArrow'),
+      library: layout && layout.querySelector('.library'),
+      work: layout && layout.querySelector('.work')
+    };
+  };
+  function apply(hidden) {
+    const n = getNodes();
+    body.classList.toggle('library-hidden', hidden);
+    if (n.library) {
+      if (hidden) {
+        n.library.style.setProperty('display', 'none', 'important');
+        ['width','min-width','max-width','flex-basis','padding-left','padding-right','border-left-width','border-right-width'].forEach(p => n.library.style.setProperty(p, '0', 'important'));
+        n.library.style.setProperty('flex', '0 0 0', 'important');
+        n.library.style.setProperty('overflow', 'hidden', 'important');
+      } else {
+        n.library.style.setProperty('display', 'block', 'important');
+        n.library.style.setProperty('width', '206px', 'important');
+        n.library.style.setProperty('min-width', '206px', 'important');
+        n.library.style.setProperty('max-width', '206px', 'important');
+        n.library.style.setProperty('flex', '0 0 206px', 'important');
+        ['padding-left','padding-right','border-left-width','border-right-width','overflow'].forEach(p => n.library.style.removeProperty(p));
+      }
+    }
+    if (n.work) {
+      n.work.style.setProperty('min-width', '0', 'important');
+      n.work.style.setProperty('flex', hidden ? '1 1 100%' : '1 1 auto', 'important');
+      n.work.style.setProperty('width', hidden ? '100%' : 'auto', 'important');
+      n.work.style.setProperty('max-width', hidden ? '100%' : 'none', 'important');
+    }
+    if (n.button) {
+      n.button.setAttribute('aria-pressed', String(!hidden));
+      n.button.title = hidden ? 'Show component library' : 'Hide component library';
+      n.button.setAttribute('aria-label', n.button.title);
+    }
+    if (n.arrow) {
+      n.arrow.title = hidden ? 'Library hidden' : 'Hide component library';
+      n.arrow.setAttribute('aria-label', n.arrow.title);
+    }
+    window.dispatchEvent(new Event('resize'));
+  }
+  document.addEventListener('click', function (event) {
+    const n = getNodes();
+    const button = event.target.closest && event.target.closest('#libraryToggle');
+    const arrow = event.target.closest && event.target.closest('#libraryCollapseArrow');
+    if (!button && !arrow) return;
+    event.preventDefault();
+    event.stopPropagation();
+    event.stopImmediatePropagation();
+    if (arrow) apply(true);
+    else apply(!body.classList.contains('library-hidden'));
+  }, true);
+  // Always start collapsed, including on a fresh page load.
+  apply(true);
+})();
+</script>
+
+
+<script id="esc-v69-workspace-doubleclick-fallback">
+/* V69: open properties reliably even when drag pointer handlers suppress dblclick.
+   Detect two quick pointer presses on the same placed component at document capture,
+   then open after pointerup/drag handlers have finished selecting it. */
+(function workspaceDoubleClickPropertiesV69(){
+  let previous = null;
+  let moved = false;
+  let start = null;
+  document.addEventListener('pointerdown', function(e){
+    if (e.button !== 0 || document.body.classList.contains('live')) return;
+    const g = e.target && e.target.closest ? e.target.closest('#dropLayer .dropped-symbol') : null;
+    if (!g || e.target.closest('.mag-port') || e.target.closest('.connected-wire') || (typeof window.resolvePortFromEvent === 'function' && window.resolvePortFromEvent(e, 11))) { previous = null; start = null; moved = false; return; }
+    const now = Date.now();
+    const sameDouble = previous && previous.g === g && now - previous.time <= 500 && !previous.moved;
+    previous = {g, time:now, moved:false};
+    start = {x:e.clientX, y:e.clientY, g};
+    moved = false;
+    if (sameDouble) {
+      const target = g;
+      window.setTimeout(function(){
+        if (!target.isConnected || typeof select !== 'function') return;
+        select(target, true);
+        const panel = document.getElementById('propertyPanel');
+        if (panel) { panel.classList.add('open'); panel.setAttribute('aria-hidden','false'); }
+        const status = document.getElementById('state');
+        if (status) status.textContent = 'COMPONENT DETAILS • ' + (target.dataset.ref || target.dataset.name || 'COMPONENT');
+      }, 220);
+      previous = null;
+    }
+  }, true);
+  document.addEventListener('pointermove', function(e){
+    if (!start || !previous || start.g !== previous.g) return;
+    if (Math.hypot(e.clientX-start.x, e.clientY-start.y) > 5) { moved = true; previous.moved = true; }
+  }, true);
+  document.addEventListener('pointerup', function(){ start = null; moved = false; }, true);
+  document.addEventListener('pointercancel', function(){ start = null; previous = null; moved = false; }, true);
+})();
+</script>
+
+<script id="esc-three-requested-changes-v2">
+(()=>{
+ const NS='http://www.w3.org/2000/svg', svg=document.getElementById('schematic'), layer=document.getElementById('dropLayer');
+ if(!svg||!layer)return;
+ const $=id=>document.getElementById(id);
+ const isDark=()=>document.body.classList.contains('theme-light')===false;
+
+ // Exact Theme Colors & Standard Colors from Image 3 / Image 4
+ const THEME_BASE_COLORS = [
+   '#ffffff', '#000000', '#e7e6e6', '#1f3864', '#1f4e79',
+   '#ed7d31', '#275317', '#0099cc', '#993399', '#548235'
+ ];
+ const THEME_SHADE_ROWS = [
+   ['#f2f2f2', '#7f7f7f', '#d0cece', '#d9e1f2', '#bdd7ee', '#fce4d6', '#e2efda', '#d6f5ff', '#f2d9f2', '#e2efda'],
+   ['#d9d9d9', '#595959', '#aeaaaa', '#b4c6e7', '#9bc2e6', '#f8cbad', '#c6e0b4', '#99e6ff', '#e6b3e6', '#c5e0b4'],
+   ['#bfbfbf', '#3f3f3f', '#757171', '#8ea9db', '#2f75b5', '#f4b084', '#a9d08e', '#33ccff', '#cc66cc', '#a9d18e'],
+   ['#a6a6a6', '#262626', '#3a3838', '#2f5597', '#1e4e79', '#c65911', '#1e4112', '#007399', '#732673', '#385723'],
+   ['#7f7f7f', '#0c0c0c', '#171616', '#1f3864', '#13324d', '#833c0c', '#142b0c', '#004d66', '#4d194d', '#273c18']
+ ];
+ const STANDARD_COLORS = [
+   '#c00000', '#ff0000', '#ffc000', '#ffff00', '#92d050',
+   '#00b050', '#00b0f0', '#0070c0', '#002060', '#7030a0'
+ ];
+
+ // Default IEC / RYB standard colour map
+ const getIecDefaultColours = (dark = isDark()) => ({
+   l1: '#ff0000',        // IEC/RYB Phase L1 (Red)
+   l2: '#ffc000',        // IEC/RYB Phase L2 (Yellow/Amber)
+   l3: '#0070c0',        // IEC/RYB Phase L3 (Blue)
+   l:  '#ff0000',        // Single Phase Line L (Red)
+   n:  '#00b0f0',        // IEC Neutral N (Blue / Light Blue)
+   pe: '#00b050',        // IEC Protective Earth PE (Green)
+   pos: '#ff0000',       // DC Positive +VE (Red)
+   neg: '#0070c0',       // DC Negative -VE (Blue)
+   wire: dark ? '#ffffff' : '#000000',
+    component: dark ? '#ffffff' : '#000000',
+    tagTerminal: '#00d9f5'
+ });
+
+ const STORAGE_KEY = 'esc-iec-multi-colours-v1';
+ const USE_DEFAULT_KEY = 'esc-use-default-colour-v2';
+ const defaultToggle = $('escDefaultColour');
+ if (defaultToggle) {
+   const savedUse = window.__escSafeStorage.getItem(USE_DEFAULT_KEY);
+   defaultToggle.checked = savedUse === null ? true : (savedUse === 'true');
+ }
+
+ let userColours = getIecDefaultColours();
+ try {
+   const raw = window.__escSafeStorage.getItem(STORAGE_KEY);
+   if (raw) {
+     const parsed = JSON.parse(raw);
+     if (parsed && typeof parsed === 'object') {
+       userColours = { ...userColours, ...parsed };
+     }
+   }
+ } catch (_) {}
+
+ const saveUserColours = () => {
+   try { window.__escSafeStorage.setItem(STORAGE_KEY, JSON.stringify(userColours)); } catch (_) {}
+ };
+
+ function getEffectiveColours() {
+   const themeFallback = isDark() ? '#ffffff' : '#000000';
+   if (defaultToggle && !defaultToggle.checked) {
+     return {
+       l1: themeFallback, l2: themeFallback, l3: themeFallback,
+       l: themeFallback, n: themeFallback, pe: themeFallback,
+       pos: themeFallback, neg: themeFallback,
+        wire: themeFallback, component: themeFallback, tagTerminal: '#00d9f5'
+     };
+   }
+   return { ...getIecDefaultColours(), ...userColours };
+ }
+ window.getEscEffectiveColours = getEffectiveColours;
+
+ const activeColor = () => getEffectiveColours().component;
+
+ function updateSwatchButtonsUI() {
+   const eff = getEffectiveColours();
+   document.querySelectorAll('#escSettingsPopover .esc-colour-swatch-btn').forEach(btn => {
+     const k = btn.dataset.colorKey;
+     const fill = btn.querySelector('.swatch-fill');
+     if (fill && k && eff[k]) {
+       fill.style.background = eff[k];
+     }
+   });
+ }
+
+ function tintComponent(g, eff) {
+   if (!g || !eff) return;
+   if (typeof window.upgradeComponentToInlineSvg === 'function') {
+     window.upgradeComponentToInlineSvg(g);
+   }
+   const compColor = eff.component || (isDark() ? '#ffffff' : '#000000');
+   g.style.setProperty('--comp-stroke-color', compColor);
+   g.style.removeProperty('--pole-color');
+   g.dataset.workspaceColor = compColor;
+
+   const artSvg = g.querySelector(':scope > svg:not(.select-box)');
+   if (!artSvg) return;
+   artSvg.querySelectorAll('[style*="--pole-color"]').forEach(el => el.style.removeProperty('--pole-color'));
+ }
+
+ let isApplyingColours = false;
+ function applyColours() {
+   if (isApplyingColours) return;
+   isApplyingColours = true;
+   try {
+     const eff = getEffectiveColours();
+     const root = document.documentElement;
+     root.style.setProperty('--esc-color-l1', eff.l1);
+     root.style.setProperty('--esc-color-l2', eff.l2);
+     root.style.setProperty('--esc-color-l3', eff.l3);
+     root.style.setProperty('--esc-color-l', eff.l);
+     root.style.setProperty('--esc-color-n', eff.n);
+     root.style.setProperty('--esc-color-pe', eff.pe);
+     root.style.setProperty('--esc-color-pos', eff.pos);
+     root.style.setProperty('--esc-color-neg', eff.neg);
+     root.style.setProperty('--esc-wire-color', eff.wire);
+     root.style.setProperty('--esc-comp-color', eff.component);
+      root.style.setProperty('--esc-tag-terminal-color', eff.tagTerminal || '#00d9f5');
+
+     ['l1', 'l2', 'l3', 'l', 'n', 'pe', 'pos', 'neg'].forEach(k => {
+       root.style.removeProperty(`--esc-color-${k}-wire`);
+     });
+
+      layer.querySelectorAll('.dropped-symbol').forEach(g => {
+        tintComponent(g, eff);
+        window.applySharedLabelColourToComponent?.(g, eff.tagTerminal || '#00d9f5');
+      });
+     if (typeof window.updateWireConductorIdentification === 'function') {
+       window.updateWireConductorIdentification(window.__escLastNodePotentials);
+     }
+     updateSwatchButtonsUI();
+   } finally {
+     isApplyingColours = false;
+   }
+ }
+ window.applyEscWorkspaceColours = applyColours;
+
+ // Build the Image 3 / Image 4 Theme Colors & Standard Colors Palette Popup
+ const palettePopup = $('escColorPalettePopup');
+ const baseRowEl = $('escPaletteThemeBase');
+ const shadesGridEl = $('escPaletteThemeShades');
+ const stdRowEl = $('escPaletteStandard');
+ let activeSwatchKey = null;
+ let activeSwatchBtn = null;
+
+ function makeCell(hex) {
+   const btn = document.createElement('button');
+   btn.type = 'button';
+   btn.className = 'esc-palette-cell';
+   btn.dataset.hex = hex.toLowerCase();
+   btn.title = hex.toUpperCase();
+   btn.setAttribute('aria-label', 'Color ' + hex.toUpperCase());
+   btn.style.background = hex;
+   return btn;
+ }
+
+ if (baseRowEl && shadesGridEl && stdRowEl) {
+   baseRowEl.replaceChildren(...THEME_BASE_COLORS.map(makeCell));
+   const shadeCells = [];
+   THEME_SHADE_ROWS.forEach(row => row.forEach(hex => shadeCells.push(makeCell(hex))));
+   shadesGridEl.replaceChildren(...shadeCells);
+   stdRowEl.replaceChildren(...STANDARD_COLORS.map(makeCell));
+ }
+
+ function closePalettePopup() {
+   if (!palettePopup) return;
+   palettePopup.classList.remove('open');
+   palettePopup.setAttribute('aria-hidden', 'true');
+   activeSwatchKey = null;
+   activeSwatchBtn = null;
+ }
+
+ function openPaletteForSwatch(btn) {
+   if (!palettePopup || !btn) return;
+   const key = btn.dataset.colorKey;
+   if (palettePopup.classList.contains('open') && activeSwatchBtn === btn) {
+     closePalettePopup();
+     return;
+   }
+   activeSwatchKey = key;
+   activeSwatchBtn = btn;
+   const curHex = (getEffectiveColours()[key] || '').toLowerCase();
+   palettePopup.querySelectorAll('.esc-palette-cell').forEach(c => {
+     c.classList.toggle('active-color', c.dataset.hex === curHex);
+   });
+   palettePopup.classList.add('open');
+   palettePopup.setAttribute('aria-hidden', 'false');
+
+   const rect = btn.getBoundingClientRect();
+   const popW = 236, popH = 248;
+   let left = rect.left - popW + rect.width;
+   if (left < 10) left = Math.min(window.innerWidth - popW - 10, rect.left);
+   let top = rect.bottom + 6;
+   if (top + popH > window.innerHeight - 10) {
+     top = Math.max(10, rect.top - popH - 6);
+   }
+   palettePopup.style.left = Math.round(left) + 'px';
+   palettePopup.style.top = Math.round(top) + 'px';
+ }
+
+ document.querySelectorAll('#escSettingsPopover .esc-colour-swatch-btn').forEach(btn => {
+   btn.addEventListener('click', e => {
+     e.preventDefault();
+     e.stopPropagation();
+     openPaletteForSwatch(btn);
+   });
+ });
+
+ palettePopup?.addEventListener('click', e => {
+   e.stopPropagation();
+   const cell = e.target.closest('.esc-palette-cell');
+   if (!cell || !activeSwatchKey) return;
+   const chosen = cell.dataset.hex;
+   userColours[activeSwatchKey] = chosen;
+   if (activeSwatchKey === 'wire' || activeSwatchKey === 'component') {
+     userColours[activeSwatchKey + 'Custom'] = true;
+   }
+   if (activeSwatchKey === 'component' && typeof window.select === 'function') {
+     window.select(null);
+   }
+   if (defaultToggle && !defaultToggle.checked) {
+     defaultToggle.checked = true;
+     window.__escSafeStorage.setItem(USE_DEFAULT_KEY, 'true');
+   }
+   saveUserColours();
+   applyColours();
+   const st = $('state');
+   if (st) st.textContent = `COLOUR UPDATED • ${activeSwatchKey.toUpperCase()} → ${chosen.toUpperCase()}`;
+   closePalettePopup();
+ });
+
+ $('escResetColoursBtn')?.addEventListener('click', e => {
+   e.preventDefault();
+   e.stopPropagation();
+   userColours = getIecDefaultColours(isDark());
+   if (defaultToggle) {
+     defaultToggle.checked = true;
+     window.__escSafeStorage.setItem(USE_DEFAULT_KEY, 'true');
+   }
+   saveUserColours();
+   applyColours();
+   closePalettePopup();
+   const st = $('state');
+   if (st) st.textContent = 'COLOURS RESET TO IEC STANDARD (RYB, N, PE, +VE, -VE)';
+ });
+
+ defaultToggle?.addEventListener('change', () => {
+   window.__escSafeStorage.setItem(USE_DEFAULT_KEY, String(defaultToggle.checked));
+   applyColours();
+ });
+
+ document.addEventListener('click', e => {
+   if (palettePopup?.classList.contains('open') && !palettePopup.contains(e.target) && !e.target.closest('.esc-colour-swatch-btn')) {
+     closePalettePopup();
+   }
+ });
+
+ const colourObserver = new MutationObserver(() => applyColours());
+ colourObserver.observe(layer, { childList: true });
+ const wireLayerEl = document.getElementById('wireLayer');
+ if (wireLayerEl) colourObserver.observe(wireLayerEl, { childList: true });
+
+ const themeObserver = new MutationObserver(() => {
+   const dark = isDark();
+   if (!userColours.wireCustom) userColours.wire = dark ? '#ffffff' : '#000000';
+   if (!userColours.componentCustom) userColours.component = dark ? '#ffffff' : '#000000';
+   applyColours();
+ });
+ themeObserver.observe(document.body, { attributes: true, attributeFilter: ['class'] });
+
+ function selectText(g){if(typeof window.select==='function')window.select(null,false);layer.querySelectorAll('.drawing-text-object.selected-text').forEach(x=>x.classList.remove('selected-text'));g.classList.add('selected-text');window.__escSelectedDrawingText=g;}
+ function moveOf(g){const m=/translate\(([-\d.]+)[ ,]+([-\d.]+)\)/.exec(g.getAttribute('transform')||'');return {x:m?+m[1]:0,y:m?+m[2]:0};}
+ function textBounds(g){
+   const t=g.querySelector('text.drawing-text'); let b;
+   try{b=t.getBBox()}catch{b={x:0,y:-18,width:180,height:24};}
+   const hit=g.querySelector('.drawing-text-hit');
+   hit.setAttribute('x',b.x-5);hit.setAttribute('y',b.y-4);hit.setAttribute('width',Math.max(30,b.width+10));hit.setAttribute('height',Math.max(25,b.height+8));
+ }
+ function ensureEditorTools(){
+    const color=$('escTextColour'),size=$('escTextSize');
+    if(!color||!size||color.dataset.bound)return;
+    const colorKey='esc-drawing-text-color-v1',sizeKey='esc-drawing-text-size-v1';
+    color.value=window.__escSafeStorage.getItem(colorKey)||'#ffff00';
+    size.value=window.__escSafeStorage.getItem(sizeKey)||'10';
+    color.dataset.bound='1';
+    color.addEventListener('input',()=>{
+      const value=color.value;
+      window.__escSafeStorage.setItem(colorKey,value);
+      const targets=new Set([window.__escEditingText,window.__escSelectedDrawingText].filter(g=>g&&g.isConnected));
+      targets.forEach(g=>{g.dataset.textColor=value;const t=g.querySelector('text.drawing-text');if(t)t.setAttribute('fill',value);});
+      if(editArea)editArea.style.color=value;
+    });
+    size.addEventListener('input',()=>{
+      const value=Math.max(6,Math.min(96,Number(size.value)||10));
+      size.value=String(value);
+      window.__escSafeStorage.setItem(sizeKey,String(value));
+      const targets=new Set([window.__escEditingText,window.__escSelectedDrawingText].filter(g=>g&&g.isConnected));
+      targets.forEach(g=>{g.dataset.textSize=String(value);const t=g.querySelector('text.drawing-text');if(t)t.setAttribute('font-size',String(value));textBounds(g);});
+      if(editArea)editArea.style.fontSize=value+'px';
+    });
+ }
+ let editArea=null, editTarget=null;
+ function finishEdit(keep){
+   if(!editArea)return;
+   if(keep&&editTarget){const t=editTarget.querySelector('text.drawing-text');t.textContent=editArea.value;textBounds(editTarget);}
+   const finishedTarget=editTarget;
+   editArea.remove();editArea=null;editTarget=null;window.__escEditingText=null;
+   if(finishedTarget){finishedTarget.classList.remove('editing-text');const renderedText=finishedTarget.querySelector('text.drawing-text');if(renderedText)renderedText.style.visibility='';}
+   layer.querySelectorAll('.drawing-text-object.selected-text').forEach(x=>x.classList.remove('selected-text'));
+ }
+ function beginEdit(g){
+   finishEdit(true);ensureEditorTools();editTarget=g;window.__escEditingText=g;g.classList.add('editing-text');
+   const t=g.querySelector('text.drawing-text'), pos=moveOf(g);
+   t.style.visibility='hidden';
+   const screen=svg.createSVGPoint();screen.x=pos.x;screen.y=pos.y;
+   const p=screen.matrixTransform(svg.getScreenCTM());
+   editArea=document.createElement('textarea');editArea.className='esc-text-entry';editArea.value=t.textContent==='Click to type'?'':t.textContent;
+   editArea.style.left=p.x+'px';editArea.style.top=(p.y-20)+'px';editArea.style.color=t.getAttribute('fill')||activeColor();editArea.style.fontSize=(t.getAttribute('font-size')||16)+'px';
+   document.body.appendChild(editArea);
+    $('escTextColour').value=/^#[0-9a-f]{6}$/i.test(t.getAttribute('fill')||'')?t.getAttribute('fill'):activeColor();
+    $('escTextSize').value=t.getAttribute('font-size')||16;
+   editArea.focus();editArea.setSelectionRange(editArea.value.length,editArea.value.length);
+   editArea.addEventListener('input',()=>{t.textContent=editArea.value;textBounds(g);});
+   editArea.addEventListener('keydown',e=>{
+     if(e.key==='Escape'){e.preventDefault();finishEdit(false);}
+     else if(e.key==='Enter'&&!e.shiftKey){e.preventDefault();finishEdit(true);}
+     e.stopPropagation();
+   });
+    editArea.addEventListener('blur',()=>{if(editArea)setTimeout(()=>{if(editArea&&!$('escSettingsPopover')?.contains(document.activeElement))finishEdit(true);},120);});
+ }
+ document.addEventListener('pointerdown',e=>{
+   if(e.button!==0||!e.target?.closest?.('#sheet, #schematic'))return;
+   if(e.target.closest?.('.drawing-text-object, #escSettingsPopover'))return;
+   if(editArea)finishEdit(true);
+   window.__escSelectedDrawingText=null;
+   layer.querySelectorAll('.drawing-text-object.selected-text').forEach(x=>x.classList.remove('selected-text'));
+ },true);
+ function enableText(g){
+   if(g.dataset.textBound)return;g.dataset.textBound='1';
+   g.addEventListener('pointerdown',e=>{
+     if(e.button!==0)return;e.stopPropagation();finishEdit(true);selectText(g);
+     const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(svg.getScreenCTM().inverse()),pos=moveOf(g);
+     g.__drag={x:q.x,y:q.y,tx:pos.x,ty:pos.y,id:e.pointerId};try{g.setPointerCapture(e.pointerId)}catch{}
+   });
+   g.addEventListener('pointermove',e=>{
+     const d=g.__drag;if(!d||d.id!==e.pointerId)return;
+     const p=svg.createSVGPoint();p.x=e.clientX;p.y=e.clientY;const q=p.matrixTransform(svg.getScreenCTM().inverse());
+     const r=+(g.dataset.rotation||0);g.setAttribute('transform',`translate(${d.tx+q.x-d.x} ${d.ty+q.y-d.y}) rotate(${r})`);
+   });
+   const end=e=>{if(g.__drag&&g.__drag.id===e.pointerId)g.__drag=null;};g.addEventListener('pointerup',end);g.addEventListener('pointercancel',end);
+   g.addEventListener('dblclick',e=>{e.preventDefault();e.stopPropagation();selectText(g);beginEdit(g);});
+   textBounds(g);
+ }
+ function createTextAt(x,y){
+    const g=document.createElementNS(NS,'g');g.setAttribute('class','drawing-text-object');g.setAttribute('transform',`translate(${x} ${y}) rotate(0)`);g.dataset.rotation='0';g.dataset.textObject='true';const newTextColor=$('escTextColour')?.value||activeColor(),newTextSize=String(Math.max(6,Math.min(96,Number($('escTextSize')?.value)||10)));g.dataset.textColor=newTextColor;g.dataset.textSize=newTextSize;
+   const hit=document.createElementNS(NS,'rect');hit.setAttribute('class','drawing-text-hit');hit.setAttribute('fill','transparent');hit.setAttribute('stroke','none');g.appendChild(hit);
+    const t=document.createElementNS(NS,'text');t.setAttribute('class','drawing-text');t.setAttribute('x','0');t.setAttribute('y','0');t.setAttribute('fill',newTextColor);t.setAttribute('font-size',newTextSize);t.setAttribute('font-family','Arial,sans-serif');t.textContent='';g.appendChild(t);layer.appendChild(g);enableText(g);selectText(g);beginEdit(g);return g;
+ }
+ window.createDrawingTextAt=createTextAt;
+ layer.querySelectorAll('.drawing-text-object').forEach(enableText);
+ $('insertTextBtn')?.addEventListener('click',e=>{
+   e.preventDefault();e.stopImmediatePropagation();
+   const vb=svg.viewBox.baseVal;createTextAt(vb.x+vb.width/2-150,vb.y+115);
+   $('state').textContent='TEXT INSERTED • TYPE TEXT, ENTER TO FINISH';
+ },true);
+ $('rotateBtn')?.addEventListener('click',e=>{
+   const g=window.__escSelectedDrawingText;if(!g||!g.isConnected)return;
+   e.stopPropagation();finishEdit(true);
+   const r=(+(g.dataset.rotation||0)+90)%360;g.dataset.rotation=String(r);
+   const p=moveOf(g);g.setAttribute('transform',`translate(${p.x} ${p.y}) rotate(${r})`);textBounds(g);
+ });
+ const deleteBtn=$('delete');
+ const deleteSelectedDrawingText=e=>{
+   const g=window.__escSelectedDrawingText;
+   if(!g?.isConnected)return;
+   e.preventDefault();e.stopPropagation();e.stopImmediatePropagation();
+   finishEdit(false);g.remove();window.__escSelectedDrawingText=null;
+ };
+ deleteBtn?.addEventListener('pointerdown',deleteSelectedDrawingText,true);
+ deleteBtn?.addEventListener('click',deleteSelectedDrawingText,true);
+ document.addEventListener('keydown',e=>{
+   if(e.key==='Delete'||e.key==='Backspace'){
+     if(e.target?.matches('input,textarea,[contenteditable="true"]'))return;
+     const g=window.__escSelectedDrawingText;if(g?.isConnected){e.preventDefault();finishEdit(true);g.remove();window.__escSelectedDrawingText=null;}
+   }
+ });
+ const style=document.createElement('style');style.textContent=`
+  .drawing-text-object{cursor:move;user-select:none}.drawing-text-object .drawing-text-hit{fill:transparent;stroke:transparent;pointer-events:all}
+  .drawing-text-object.selected-text:not(.editing-text) .drawing-text-hit{fill:#38bdf80d;stroke:#38bdf8;stroke-width:1;stroke-dasharray:4 3;vector-effect:non-scaling-stroke}
+ .drawing-text-object.editing-text .drawing-text-hit{stroke:transparent;stroke-width:0;stroke-dasharray:none}
+ .drawing-text-object .drawing-text{pointer-events:none;font-family:Arial,sans-serif}
+  .esc-text-entry{position:fixed;z-index:100000;width:300px;min-height:38px;resize:none;background:transparent;border:0;outline:none;caret-color:#ffff00;padding:2px 4px;line-height:1.25;white-space:pre-wrap;overflow:hidden;font-family:Arial,sans-serif}
+  body.theme-light .drawing-text-object.editing-text .drawing-text-hit{stroke:#000000} body.theme-light .esc-text-entry{border-color:#000000;caret-color:#000000}`;
+ document.head.appendChild(style);
+ applyColours();
+})();
+</script>
+
+
+<script id="esc-proximity-radar-patch">
+(function(){
+  'use strict';
+  const NS='http://www.w3.org/2000/svg';
+  const sensorSelector='#dropLayer .dropped-symbol';
+  const isProximity=(g)=>{
+    if(!g) return false;
+    const a=String(g.dataset.symbolFile||g.dataset.porttype||g.dataset.type||'').toLowerCase();
+    const n=String(g.dataset.name||'').toLowerCase();
+    return /proximity_sensor_(npn|pnp)_n[oc]/.test(a) || /proximity sensor/.test(n) || (String(g.dataset.type||'').toLowerCase().includes('proximity sensor'));
+  };
+  const svgRoot=()=>document.getElementById('schematic');
+  const dropLayer=()=>document.getElementById('dropLayer');
+  const num=(v,d=0)=>{const n=Number(v);return Number.isFinite(n)?n:d;};
+  const getAngle=(g)=>num(g.dataset.rotation,0)*Math.PI/180;
+  const localToWorld=(g,lx,ly)=>{
+    const cx=num(g.dataset.x), cy=num(g.dataset.y), a=getAngle(g);
+    const dx=lx-60, dy=ly-45;
+    return {x:cx+dx*Math.cos(a)-dy*Math.sin(a), y:cy+dx*Math.sin(a)+dy*Math.cos(a)};
+  };
+  const worldToLocalDelta=(g,x,y)=>{
+    const a=getAngle(g), dx=x-num(g.dataset.x), dy=y-num(g.dataset.y);
+    return {x:dx*Math.cos(a)+dy*Math.sin(a), y:-dx*Math.sin(a)+dy*Math.cos(a)};
+  };
+  function getTargetXY(target){
+    const m=(target.getAttribute('transform')||'').match(/translate\(\s*(-?[\d.]+)[ ,]+(-?[\d.]+)/);
+    return m?{x:Number(m[1]),y:Number(m[2])}:{x:0,y:0};
+  }
+  function setTargetXY(target,x,y){target.setAttribute('transform',`translate(${x} ${y})`);target.dataset.targetX=String(x);target.dataset.targetY=String(y);}
+  function addRadar(g){
+    if(g.querySelector(':scope > .esc-prox-radar')) return;
+    const radar=document.createElementNS(NS,'g');
+    radar.setAttribute('class','esc-prox-radar');
+    radar.setAttribute('aria-hidden','true');
+    radar.style.display='none';
+    // Local left side faces the diamond and the B1 tag. Keep the zone behind the sensor artwork.
+    const cone=document.createElementNS(NS,'path');
+    cone.setAttribute('class','esc-prox-cone');
+    cone.setAttribute('d','M -50 20 H 30 V 70 H -50 Z');
+    radar.appendChild(cone);
+    const art=g.querySelector(':scope > svg:not(.select-box)');
+    if(art) g.insertBefore(radar,art); else g.insertBefore(radar,g.firstChild);
+  }
+  function hideDuplicateTerminalLabels(g){
+    // The SVG artwork already contains BN/BK/BU; hide only the generated duplicate terminal labels.
+    g.querySelectorAll(':scope > .component-ports .port-name').forEach(t=>{t.style.display='none';t.style.visibility='hidden';});
+  }
+  function makeTarget(sensor){
+    const layer=dropLayer(); if(!layer) return null;
+    let target=[...layer.querySelectorAll(':scope > .esc-prox-metal-target')].find(t=>t.dataset.sensorUid===sensor.dataset.uid);
+    if(target) return target;
+    target=document.createElementNS(NS,'g');
+    target.setAttribute('class','esc-prox-metal-target');
+    target.setAttribute('role','img');
+    target.setAttribute('aria-label','Movable metal target for proximity sensor');
+    target.dataset.sensorUid=sensor.dataset.uid||'';
+    target.style.cursor='grab';
+    target.style.touchAction='none';
+    const shadow=document.createElementNS(NS,'path');
+    shadow.setAttribute('d','M -12 -17 L 4 -17 L 12 -9 L 12 17 L -12 17 Z');
+    shadow.setAttribute('fill','#233d55');
+    shadow.setAttribute('stroke','#9eb9d0');
+    shadow.setAttribute('stroke-width','1');
+    const face=document.createElementNS(NS,'path');
+    face.setAttribute('d','M -12 -17 L 4 -17 L 12 -9 L -4 -9 Z');
+    face.setAttribute('fill','#b8cbdc');
+    face.setAttribute('stroke','#e5f2ff');
+    face.setAttribute('stroke-width','.8');
+    const side=document.createElementNS(NS,'path');
+    side.setAttribute('d','M 4 -17 L 12 -9 L 12 17 L 4 9 Z');
+    side.setAttribute('fill','#718da7');
+    side.setAttribute('stroke','#a7c0d6');
+    side.setAttribute('stroke-width','.8');
+    const front=document.createElementNS(NS,'path');
+    front.setAttribute('d','M -12 -17 L 4 -17 L 4 9 L -12 17 Z');
+    front.setAttribute('fill','#8ea8c0');
+    front.setAttribute('stroke','#d8e8f5');
+    front.setAttribute('stroke-width','.8');
+    [shadow,side,front,face].forEach(el=>target.appendChild(el));
+    const title=document.createElementNS(NS,'title');title.textContent='Drag the metal target into the green detection zone';target.appendChild(title);
+    layer.appendChild(target);
+    const p=localToWorld(sensor,-145,45);
+    setTargetXY(target,p.x,p.y);
+    target.dataset.manual='0';
+    return target;
+  }
+  function getSensorPowered(g){
+    return document.body.classList.contains('simulation-run-ui') && g.classList.contains('device-on');
+  }
+  function inDetectionZone(sensor,target){
+    // Use the actual rendered SVG geometry so detection matches the visible green radar
+    // exactly, independent of component scale, transform origin, zoom, or rotation.
+    try{
+      const svg=svgRoot();
+      const radar=sensor.querySelector(':scope > .esc-prox-radar .esc-prox-cone');
+      if(svg && radar && typeof radar.getBBox==='function' && typeof target.getBBox==='function'){
+        const rootScreen=svg.getScreenCTM();
+        const radarScreen=radar.getScreenCTM();
+        const targetScreen=target.getScreenCTM();
+        if(rootScreen && radarScreen && targetScreen){
+          const toRoot=rootScreen.inverse();
+          const rb=radar.getBBox(), tb=target.getBBox();
+          const rmat=toRoot.multiply(radarScreen), tmat=toRoot.multiply(targetScreen);
+          function box(b,m){
+            const pts=[new DOMPoint(b.x,b.y),new DOMPoint(b.x+b.width,b.y),new DOMPoint(b.x,b.y+b.height),new DOMPoint(b.x+b.width,b.y+b.height)].map(p=>p.matrixTransform(m));
+            return {left:Math.min(...pts.map(p=>p.x)),right:Math.max(...pts.map(p=>p.x)),top:Math.min(...pts.map(p=>p.y)),bottom:Math.max(...pts.map(p=>p.y))};
+          }
+          const r=box(rb,rmat), t=box(tb,tmat);
+          return t.right>=r.left && t.left<=r.right && t.bottom>=r.top && t.top<=r.bottom;
+        }
+      }
+    }catch(_){}
+    // Fallback: conservative local-space overlap with the radar rectangle.
+    const p=getTargetXY(target), d=worldToLocalDelta(sensor,p.x,p.y);
+    const halfW=12, halfH=17;
+    return (d.x+halfW)>=-50 && (d.x-halfW)<=30 && (d.y+halfH)>=20 && (d.y-halfH)<=70;
+  }
+  function updateSensors(){
+    const sensors=[...document.querySelectorAll(sensorSelector)].filter(isProximity);
+    const liveUids=new Set(sensors.map(g=>g.dataset.uid||''));
+    const layer=dropLayer();
+    let changed=false;
+    layer?.querySelectorAll(':scope > .esc-prox-metal-target').forEach(t=>{if(!liveUids.has(t.dataset.sensorUid))t.remove();});
+    sensors.forEach(sensor=>{
+      addRadar(sensor);
+      hideDuplicateTerminalLabels(sensor);
+      const radar=sensor.querySelector(':scope > .esc-prox-radar');
+      const powered=getSensorPowered(sensor);
+      if(radar) radar.style.display=powered?'':'none';
+      let target=[...((layer&&layer.querySelectorAll(':scope > .esc-prox-metal-target'))||[])].find(t=>t.dataset.sensorUid===(sensor.dataset.uid||''));
+      if(powered){
+        if(!target) target=makeTarget(sensor);
+        if(target){
+          target.style.display='';
+          let detected=inDetectionZone(sensor,target);
+          const propState = (sensor.dataset.targetDetected === '1' || sensor.dataset.simState === '1') ? '1' : '0';
+          if(!drag && target.dataset.lastSyncedState !== undefined && propState !== target.dataset.lastSyncedState){
+            const dest = propState === '1' ? localToWorld(sensor, -10, 45) : localToWorld(sensor, -145, 45);
+            setTargetXY(target, dest.x, dest.y);
+            detected = propState === '1';
+          }
+          const next=detected?'1':'0';
+          target.dataset.lastSyncedState = next;
+          if(sensor.dataset.targetDetected!==next || sensor.dataset.simState!==next){
+            sensor.dataset.targetDetected=next;
+            sensor.dataset.simState=next;
+            changed=true;
+          }
+          const isPnp = String(sensor.dataset.sensorPolarity || sensor.dataset.symbolFile || '').toUpperCase().includes('PNP');
+          sensor.classList.toggle('esc-prox-pnp', isPnp);
+          if(radar) radar.classList.toggle('target-detected',detected); sensor.classList.toggle('esc-prox-detected',detected);
+        }
+      } else {
+        if(target) target.remove();
+        if(sensor.dataset.targetDetected==='1' || sensor.dataset.simState==='1'){
+          sensor.dataset.targetDetected='0';sensor.dataset.simState='0';changed=true;
+        }
+        if(radar) radar.classList.remove('target-detected'); sensor.classList.remove('esc-prox-detected');
+      }
+    });
+    return changed;
+  }
+  function toSchematicPoint(e){
+    const svg=svgRoot(); if(!svg) return null;
+    const ctm=svg.getScreenCTM(); if(!ctm) return null;
+    const pt=svg.createSVGPoint();pt.x=e.clientX;pt.y=e.clientY;
+    const p=pt.matrixTransform(ctm.inverse());return {x:p.x,y:p.y};
+  }
+  let drag=null;
+  document.addEventListener('pointerdown',e=>{
+    const target=e.target?.closest?.('.esc-prox-metal-target');
+    if(!target || !document.body.classList.contains('simulation-run-ui')) return;
+    e.preventDefault();e.stopPropagation();
+    const p=toSchematicPoint(e);if(!p)return;
+    const cur=getTargetXY(target);
+    drag={target,pointerId:e.pointerId,dx:cur.x-p.x,dy:cur.y-p.y};
+    target.style.cursor='grabbing';
+    try{target.setPointerCapture(e.pointerId);}catch(_){}
+  },true);
+  document.addEventListener('pointermove',e=>{
+    if(!drag || e.pointerId!==drag.pointerId)return;
+    const p=toSchematicPoint(e);if(!p)return;
+    setTargetXY(drag.target,p.x+drag.dx,p.y+drag.dy);
+    drag.target.dataset.manual='1';
+    const sensor=[...document.querySelectorAll(sensorSelector)].find(g=>isProximity(g)&&(g.dataset.uid||'')===drag.target.dataset.sensorUid);
+    if(sensor){
+      const detected=inDetectionZone(sensor,drag.target),next=detected?'1':'0';
+      drag.target.dataset.lastSyncedState=next;
+      if(sensor.dataset.targetDetected!==next || sensor.dataset.simState!==next){
+        sensor.dataset.targetDetected=next;sensor.dataset.simState=next;
+        if(window.__escProxOriginalEvaluate) window.__escProxOriginalEvaluate();
+      }
+      const radar=sensor.querySelector(':scope > .esc-prox-radar');
+      const isPnp = String(sensor.dataset.sensorPolarity || sensor.dataset.symbolFile || '').toUpperCase().includes('PNP');
+      sensor.classList.toggle('esc-prox-pnp', isPnp);
+      if(radar)radar.classList.toggle('target-detected',detected); sensor.classList.toggle('esc-prox-detected',detected);
+    }
+  },true);
+  function endDrag(e){if(!drag || (e.pointerId!=null&&e.pointerId!==drag.pointerId))return;drag.target.style.cursor='grab';drag=null;}
+  document.addEventListener('pointerup',endDrag,true);
+  document.addEventListener('pointercancel',endDrag,true);
+
+  // Radar and targets follow simulation power state, while target detection feeds the existing circuit engine.
+  if(typeof window.evaluateCircuitSimulation==='function'&&!window.__escProxEvalWrapped){
+    window.__escProxOriginalEvaluate=window.evaluateCircuitSimulation;
+    window.evaluateCircuitSimulation=function(){
+      const result=window.__escProxOriginalEvaluate.apply(this,arguments);
+      if(!window.__escProxUpdating){
+        window.__escProxUpdating=true;
+        try{if(updateSensors()) window.__escProxOriginalEvaluate();}
+        finally{window.__escProxUpdating=false;}
+      }
+      // A second pass updates the radar appearance after the contact-state calculation.
+      updateSensors();
+      return result;
+    };
+    window.__escProxEvalWrapped=true;
+  }
+  // In run mode the proximity sensor is controlled by the draggable target, not by clicking the sensor.
+  if(typeof window.toggleComponentInRunMode==='function'&&!window.__escProxToggleWrapped){
+    const oldToggle=window.toggleComponentInRunMode;
+    window.toggleComponentInRunMode=function(g,...args){if(isProximity(g))return false;return oldToggle.call(this,g,...args);};
+    window.__escProxToggleWrapped=true;
+  }
+  const style=document.createElement('style');
+  style.textContent=`
+    #dropLayer .dropped-symbol .component-ports .port-name.esc-hidden-prox-label{display:none!important;visibility:hidden!important}
+    #dropLayer .dropped-symbol .esc-prox-radar{pointer-events:none;overflow:visible}
+    #dropLayer .dropped-symbol .esc-prox-cone{fill:#00e66a;fill-opacity:.16;stroke:none}
+    #dropLayer .dropped-symbol .esc-prox-radar.target-detected .esc-prox-cone{fill-opacity:.28}
+    #dropLayer .dropped-symbol.esc-prox-detected:not(.esc-prox-pnp) svg #svg_optics polygon{animation:escProxDiamondBlink .65s steps(2,end) infinite;fill:#ffd400!important;stroke:#ffe45c!important}
+    #dropLayer .dropped-symbol.esc-prox-detected.esc-prox-pnp svg #svg_optics polygon{animation:escProxDiamondBlinkBlue .65s steps(2,end) infinite;fill:#38bdf8!important;stroke:#7dd3fc!important}
+    @keyframes escProxDiamondBlink{0%,100%{opacity:1;filter:drop-shadow(0 0 4px #ffd400)}50%{opacity:.25;filter:none}}
+    @keyframes escProxDiamondBlinkBlue{0%,100%{opacity:1;filter:drop-shadow(0 0 6px #38bdf8)}50%{opacity:.25;filter:none}}
+    #dropLayer > .esc-prox-metal-target{pointer-events:all;touch-action:none;filter:drop-shadow(0 2px 3px #0008)}
+    #dropLayer > .esc-prox-metal-target:hover{filter:drop-shadow(0 0 5px #38bdf8)}
+  `;
+  document.head.appendChild(style);
+  ensureEditorTools();
+  const observer=new MutationObserver(()=>{
+    document.querySelectorAll(sensorSelector).forEach(g=>{if(isProximity(g))hideDuplicateTerminalLabels(g);});
+  });
+  const layer=dropLayer();
+  if(layer)observer.observe(layer,{childList:true,subtree:true});
+  document.querySelectorAll(sensorSelector).forEach(g=>{if(isProximity(g)){addRadar(g);hideDuplicateTerminalLabels(g);}});
+})();
+</script>
+
+</body>
+</html>
